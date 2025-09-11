@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extension Loading Guide - Propace Autofill</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        .success-header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .step {
+            background: #f8f9fa;
+            border-left: 5px solid #007bff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .step h3 {
+            color: #007bff;
+            margin-top: 0;
+        }
+        .code-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+        .path-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 8px;
+            color: #856404;
+            font-weight: bold;
+            word-break: break-all;
+        }
+        .btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 5px;
+            transition: transform 0.2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .alert-warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .checklist {
+            background: #e8f5e8;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+        }
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .checklist li:last-child {
+            border-bottom: none;
+        }
+        .checklist li::before {
+            content: '✅ ';
+            color: #28a745;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-header">
+            <h1>🎉 CSP Error Fixed!</h1>
+            <p>Your Propace Autofill Extension is ready to load</p>
+        </div>
+
+        <div class="alert alert-success">
+            <strong>✅ Problem Solved:</strong> The "unsafe-eval" CSP error has been removed from manifest.json. Your extension should now load without issues.
+        </div>
+
+        <!-- Step-by-step loading guide -->
+        <div class="step">
+            <h3>📝 Step 1: Open Chrome Extensions</h3>
+            <p>Copy and paste this URL in Chrome address bar:</p>
+            <div class="code-box">chrome://extensions/</div>
+            <button class="btn" onclick="openExtensions()">🚀 Open Extensions Page</button>
+        </div>
+
+        <div class="step">
+            <h3>🔧 Step 2: Enable Developer Mode</h3>
+            <p>Toggle the "Developer mode" switch in the top-right corner of the extensions page.</p>
+            <div class="alert alert-info">
+                <strong>Note:</strong> You must enable Developer mode to load unpacked extensions.
+            </div>
+        </div>
+
+        <div class="step">
+            <h3>📁 Step 3: Load Unpacked Extension</h3>
+            <p>Click the "Load unpacked" button and navigate to your extension folder:</p>
+            <div class="path-box" id="extensionPath">
+                C:\Users\MUJEEB\OneDrive\Desktop\propace autofill assitance
+            </div>
+            <button class="btn" onclick="copyPath()">📋 Copy Path</button>
+            <button class="btn" onclick="openFolder()">📂 Open Folder</button>
+        </div>
+
+        <div class="step">
+            <h3>✅ Step 4: Verify Installation</h3>
+            <p>After loading, you should see the Propace Autofill extension in your extensions list with no errors.</p>
+        </div>
+
+        <!-- Verification checklist -->
+        <div class="checklist">
+            <h3>🔍 Installation Checklist</h3>
+            <ul>
+                <li>manifest.json file exists and loads without CSP errors</li>
+                <li>content-script.js loads without syntax errors</li>
+                <li>popup.js and popup.html are accessible</li>
+                <li>Extension icon appears in Chrome toolbar</li>
+                <li>No red error messages in extensions page</li>
+            </ul>
+        </div>
+
+        <!-- Testing instructions -->
+        <div class="alert alert-info">
+            <h4>🧪 Testing Your Extension:</h4>
+            <ol>
+                <li>Go to any website with forms (e.g., contact forms, signup pages)</li>
+                <li>Click the Propace extension icon in the toolbar</li>
+                <li>Fill out the popup form with your details</li>
+                <li>Click "Fill Forms" to test autofill functionality</li>
+                <li>Open Chrome DevTools (F12) → Console to see detailed logs</li>
+            </ol>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="alert alert-warning">
+            <h4>🔧 Still Having Issues?</h4>
+            <ul>
+                <li><strong>Permission Error:</strong> Make sure the folder isn't read-only</li>
+                <li><strong>File Not Found:</strong> Verify all files are in the correct location</li>
+                <li><strong>CSP Error:</strong> Should be fixed, but refresh extensions page if needed</li>
+                <li><strong>Script Errors:</strong> Check Chrome DevTools Console for JavaScript errors</li>
+            </ul>
+        </div>
+
+        <!-- Test form -->
+        <div class="step">
+            <h3>🎯 Test Form (Use after installation)</h3>
+            <form id="testForm">
+                <div style="margin: 10px 0;">
+                    <label>Name:</label>
+                    <input type="text" name="name" placeholder="Your full name" style="width: 100%; padding: 8px; margin: 5px 0;">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Email:</label>
+                    <input type="email" name="email" placeholder="your@email.com" style="width: 100%; padding: 8px; margin: 5px 0;">
+                </div>
+                <div style="margin: 10px 0;">
+                    <label>Phone:</label>
+                    <input type="tel" name="phone" placeholder="+92-300-0000000" style="width: 100%; padding: 8px; margin: 5px 0;">
+                </div>
+                <button type="button" class="btn" onclick="testExtension()">🧪 Test Extension Here</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openExtensions() {
+            window.open('chrome://extensions/', '_blank');
+        }
+
+        function copyPath() {
+            const path = document.getElementById('extensionPath').textContent;
+            navigator.clipboard.writeText(path).then(() => {
+                alert('📋 Extension path copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = path;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('📋 Extension path copied to clipboard!');
+            });
+        }
+
+        function openFolder() {
+            // This won't work from a web page, but provides instruction
+            alert('📂 Manual step: Navigate to the folder shown above when selecting "Load unpacked"');
+        }
+
+        function testExtension() {
+            alert('🧪 Test instruction:\n\n1. First install the extension using steps above\n2. Click the extension icon in Chrome toolbar\n3. Use the popup to fill this form\n4. Check console for detailed logs');
+        }
+
+        // Auto-update path if available
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📋 Extension Loading Guide Ready');
+            console.log('🔧 CSP Error Fixed - Extension should load properly now');
+        });
+    </script>
+</body>
+</html>

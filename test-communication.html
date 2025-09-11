@@ -1,0 +1,56 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Propace Communication Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; }
+        form { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 4px; }
+        input { display: block; width: 100%; margin: 10px 0; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .status { margin: 20px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #e6ffe6; border: 1px solid #99ff99; }
+        .error { background: #ffe6e6; border: 1px solid #ff9999; }
+        #diagnostics { margin-top: 20px; padding: 10px; background: #f5f5f5; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Propace Communication Test</h1>
+    <div id="status"></div>
+    
+    <form id="test-form">
+        <input type="text" name="full_name" placeholder="Full Name">
+        <input type="text" name="father_name" placeholder="Father Name">
+        <input type="email" name="email" placeholder="Email">
+    </form>
+
+    <div id="diagnostics">
+        <h3>Communication Diagnostics</h3>
+        <pre id="diagnostics-output"></pre>
+    </div>
+
+    <!-- Load the scripts in correct order -->
+    <script src="popup-comm-snippet.js"></script>
+    <script src="content-script.js"></script>
+    <script src="test-communication.js"></script>
+
+    <script>
+        // Update UI with status messages
+        window.addEventListener('message', event => {
+            if (event.data && event.data.type === 'propace_status') {
+                const statusDiv = document.getElementById('status');
+                statusDiv.textContent = event.data.message;
+                statusDiv.className = 'status ' + (event.data.success ? 'success' : 'error');
+            }
+        });
+
+        // Update diagnostics display
+        setInterval(async () => {
+            if (window.PropaceContentScript) {
+                const diagnostics = await window.PropaceContentScript.getDiagnostics();
+                document.getElementById('diagnostics-output').textContent = 
+                    JSON.stringify(diagnostics, null, 2);
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

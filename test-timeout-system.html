@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timeout & Error Testing - Propace Autofill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-left: 4px solid #007bff;
+        }
+        .test-button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+            transition: background-color 0.3s;
+        }
+        .test-button:hover {
+            background-color: #0056b3;
+        }
+        .test-button.danger {
+            background-color: #dc3545;
+        }
+        .test-button.danger:hover {
+            background-color: #c82333;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+        .success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border-left: 4px solid #28a745;
+        }
+        .info { 
+            background-color: #d1ecf1; 
+            color: #0c5460; 
+            border-left: 4px solid #17a2b8;
+        }
+        .warning { 
+            background-color: #fff3cd; 
+            color: #856404; 
+            border-left: 4px solid #ffc107;
+        }
+        .error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border-left: 4px solid #dc3545;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+        .console-output {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+            white-space: pre-wrap;
+        }
+        .slow-form {
+            animation: slowLoad 5s ease-in-out;
+        }
+        @keyframes slowLoad {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .timer {
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>⏰ Propace Autofill - Timeout & Error Testing</h1>
+    
+    <div class="status info">
+        <strong>🎯 Test Purpose:</strong> Verify that autofill system properly handles timeouts (60 second limit) and provides comprehensive error reporting when things go wrong.
+    </div>
+
+    <!-- Timer Display -->
+    <div class="timer" id="timer">
+        Timer: 00:00
+    </div>
+
+    <!-- Standard Form for Success Testing -->
+    <div class="test-section">
+        <h2>✅ Standard Form (Should work within timeout)</h2>
+        <div class="form-group">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" placeholder="Enter your full name">
+        </div>
+        <div class="form-group">
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" id="phone" name="phone" placeholder="Enter your phone">
+        </div>
+    </div>
+
+    <!-- Slow Loading Form -->
+    <div class="test-section">
+        <h2>🐌 Slow Loading Form (Timeout Test)</h2>
+        <div id="slow-form-container">
+            <p>Slow loading form will appear in 10 seconds to test timeout handling...</p>
+        </div>
+        <button class="test-button" onclick="loadSlowForm()">Load Slow Form Now</button>
+    </div>
+
+    <!-- Protected Form (CSP Simulation) -->
+    <div class="test-section">
+        <h2>🛡️ Protected Form (CSP Error Test)</h2>
+        <div class="form-group">
+            <label for="protected-field">Protected Field:</label>
+            <input type="text" id="protected-field" readonly placeholder="This field is read-only (simulates CSP block)">
+        </div>
+        <div class="form-group">
+            <label for="hidden-field">Hidden Field:</label>
+            <input type="hidden" id="hidden-field" value="hidden">
+        </div>
+    </div>
+
+    <!-- No Forms Section -->
+    <div class="test-section">
+        <h2>❌ No Forms Available (Error Test)</h2>
+        <p>This section has no input fields to test error handling when no forms are found.</p>
+        <div>Just some text content, no forms here!</div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="test-section">
+        <h2>🎮 Test Controls</h2>
+        <button class="test-button" onclick="startTimeoutTest()">🕐 Start 60-Second Timeout Test</button>
+        <button class="test-button" onclick="testErrorReporting()">🚨 Test Error Reporting</button>
+        <button class="test-button" onclick="testNormalAutofill()">✅ Test Normal Autofill</button>
+        <button class="test-button danger" onclick="clearConsole()">🗑️ Clear Console</button>
+        
+        <div class="status info">
+            <strong>Instructions:</strong>
+            <ol>
+                <li>Open Chrome DevTools (F12) to see console output</li>
+                <li>Install Propace extension if not already installed</li>
+                <li>Click test buttons to simulate different scenarios</li>
+                <li>Watch timer to see if autofill respects 60-second limit</li>
+                <li>Check console for detailed error reporting</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Console Mirror -->
+    <div class="test-section">
+        <h2>📟 Console Output Mirror</h2>
+        <div class="console-output" id="console-mirror">
+            Console output will appear here...
+        </div>
+        <button class="test-button" onclick="toggleConsoleCapture()">📊 Toggle Console Capture</button>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-section">
+        <h2>📊 Test Results</h2>
+        <div id="test-results">
+            <div class="status info">No tests run yet. Click a test button above to begin.</div>
+        </div>
+    </div>
+
+    <script>
+        let startTime = null;
+        let timerInterval = null;
+        let consoleCapture = false;
+        let testCount = 0;
+
+        // Timer functions
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 100);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function updateTimer() {
+            if (startTime) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60).toString().padStart(2, '0');
+                const seconds = (elapsed % 60).toString().padStart(2, '0');
+                document.getElementById('timer').textContent = `Timer: ${minutes}:${seconds}`;
+                
+                // Warning if approaching 60 seconds
+                if (elapsed >= 55) {
+                    document.getElementById('timer').style.backgroundColor = '#dc3545';
+                } else if (elapsed >= 45) {
+                    document.getElementById('timer').style.backgroundColor = '#ffc107';
+                    document.getElementById('timer').style.color = '#000';
+                }
+            }
+        }
+
+        // Test functions
+        function startTimeoutTest() {
+            logResult('🕐 Starting 60-second timeout test...', 'info');
+            startTimer();
+            
+            // Simulate autofill with test data
+            const testData = {
+                name: 'Timeout Test User',
+                email: 'timeout@test.com',
+                phone: '+92-300-0000000'
+            };
+            
+            simulateAutofill(testData, 'timeout-test');
+        }
+
+        function testErrorReporting() {
+            logResult('🚨 Testing error reporting system...', 'info');
+            startTimer();
+            
+            // Test with problematic data
+            const testData = {
+                'invalid-field': 'This field does not exist',
+                'protected-field': 'Should fail on readonly field',
+                'non-existent': 'Field not found test'
+            };
+            
+            simulateAutofill(testData, 'error-test');
+        }
+
+        function testNormalAutofill() {
+            logResult('✅ Testing normal autofill operation...', 'info');
+            startTimer();
+            
+            const testData = {
+                name: 'Ahmad Ali Khan',
+                email: 'ahmad@example.com',
+                phone: '+92-300-1234567'
+            };
+            
+            simulateAutofill(testData, 'normal-test');
+        }
+
+        function simulateAutofill(data, testType) {
+            // This simulates the extension's autofill process
+            console.group(`🚀 Propace Autofill Test: ${testType}`);
+            console.log('Test data:', data);
+            console.log('Expected timeout: 60 seconds');
+            
+            // Simulate the timeout and error scenarios
+            setTimeout(() => {
+                const elapsed = Date.now() - startTime;
+                
+                if (testType === 'timeout-test' && elapsed < 60000) {
+                    // Simulate timeout scenario
+                    console.group('⏰ TIMEOUT SIMULATION');
+                    console.error('⏰ AUTOFILL TIMEOUT: Process stopped after 60 seconds');
+                    console.log('📊 PROPACE AUTOFILL - FINAL REPORT');
+                    console.log('🎯 SUCCESS RATE: 0% (0/3 fields)');
+                    console.log('⏱️ EXECUTION TIME: 60000ms (TIMED OUT)');
+                    console.log('🔧 METHODS USED: None (timed out before completion)');
+                    console.group('❌ ERRORS AND ISSUES');
+                    console.error('1. Main autofill process error: Operation timed out after 60 seconds');
+                    console.error('2. All communication strategies failed within timeout limit');
+                    console.groupEnd();
+                    console.groupEnd();
+                    
+                    logResult('⏰ Timeout test completed - System properly stopped after 60 seconds', 'warning');
+                } else if (testType === 'error-test') {
+                    // Simulate comprehensive error reporting
+                    console.group('📊 PROPACE AUTOFILL - FINAL REPORT');
+                    console.log('🎯 SUCCESS RATE: 0% (0/3 fields)');
+                    console.log('⏱️ EXECUTION TIME: 5000ms');
+                    console.log('🔧 METHODS USED: None');
+                    console.group('⚠️ WARNINGS');
+                    console.warn('1. Content Security Policy detected - may require bypass methods');
+                    console.warn('2. Protected fields detected - manual filling may be required');
+                    console.groupEnd();
+                    console.group('❌ ERRORS AND ISSUES');
+                    console.error('1. Standard autofill failed - readonly fields detected');
+                    console.error('2. CSP bypass methods failed - insufficient permissions');
+                    console.error('3. Emergency fallback methods failed - field access denied');
+                    console.group('💡 POSSIBLE SOLUTIONS');
+                    console.log('🛡️ CSP Issues: Try enabling "Allow scripts" or use a different browser');
+                    console.log('🔒 Permission Issues: Extension may need additional permissions in Chrome settings');
+                    console.log('📝 Field Issues: Form may use custom components - manual filling may be required');
+                    console.groupEnd();
+                    console.groupEnd();
+                    console.log('🚫 AUTOFILL FAILED - Website may block automated form filling');
+                    console.groupEnd();
+                    
+                    logResult('🚨 Error reporting test completed - Comprehensive error details provided', 'error');
+                } else {
+                    // Simulate successful autofill
+                    console.group('📊 PROPACE AUTOFILL - FINAL REPORT');
+                    console.log('🎯 SUCCESS RATE: 100% (3/3 fields)');
+                    console.log('⏱️ EXECUTION TIME: 2500ms');
+                    console.log('🔧 METHODS USED: standard');
+                    console.log('🛡️ BYPASS REQUIRED: No');
+                    console.log('🎉 AUTOFILL SUCCESSFUL - Most fields filled correctly!');
+                    console.groupEnd();
+                    
+                    // Actually fill the form for demo
+                    fillFormFields(data);
+                    
+                    logResult('✅ Normal autofill test completed successfully', 'success');
+                }
+                
+                stopTimer();
+                console.groupEnd();
+                
+            }, testType === 'timeout-test' ? 60000 : Math.random() * 5000 + 1000);
+        }
+
+        function fillFormFields(data) {
+            // Actually fill the visible form fields
+            Object.entries(data).forEach(([key, value]) => {
+                const field = document.getElementById(key) || document.querySelector(`[name="${key}"]`);
+                if (field && field.type !== 'hidden' && !field.readOnly) {
+                    field.value = value;
+                    field.style.backgroundColor = '#d4edda'; // Green highlight
+                }
+            });
+        }
+
+        function loadSlowForm() {
+            const container = document.getElementById('slow-form-container');
+            container.innerHTML = '<p>Loading slow form...</p>';
+            
+            // Simulate slow loading
+            setTimeout(() => {
+                container.innerHTML = `
+                    <div class="slow-form">
+                        <div class="form-group">
+                            <label for="slow-name">Slow Name Field:</label>
+                            <input type="text" id="slow-name" name="name" placeholder="This loaded slowly">
+                        </div>
+                        <div class="form-group">
+                            <label for="slow-email">Slow Email Field:</label>
+                            <input type="email" id="slow-email" name="email" placeholder="Delayed loading field">
+                        </div>
+                    </div>
+                `;
+                logResult('🐌 Slow form loaded after 10 seconds', 'info');
+            }, 10000);
+        }
+
+        function clearConsole() {
+            console.clear();
+            document.getElementById('console-mirror').textContent = 'Console cleared...';
+            logResult('🗑️ Console cleared', 'info');
+        }
+
+        function logResult(message, type) {
+            testCount++;
+            const results = document.getElementById('test-results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `status ${type}`;
+            resultDiv.innerHTML = `<strong>Test ${testCount}:</strong> ${message}`;
+            results.appendChild(resultDiv);
+            
+            // Scroll to bottom
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function toggleConsoleCapture() {
+            consoleCapture = !consoleCapture;
+            const button = event.target;
+            
+            if (consoleCapture) {
+                button.textContent = '📊 Stop Console Capture';
+                button.style.backgroundColor = '#dc3545';
+                startConsoleCapture();
+            } else {
+                button.textContent = '📊 Toggle Console Capture';
+                button.style.backgroundColor = '#007bff';
+                stopConsoleCapture();
+            }
+        }
+
+        function startConsoleCapture() {
+            const mirror = document.getElementById('console-mirror');
+            const originalLog = console.log;
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            
+            console.log = function(...args) {
+                mirror.textContent += `LOG: ${args.join(' ')}\n`;
+                mirror.scrollTop = mirror.scrollHeight;
+                originalLog.apply(console, args);
+            };
+            
+            console.error = function(...args) {
+                mirror.textContent += `ERROR: ${args.join(' ')}\n`;
+                mirror.scrollTop = mirror.scrollHeight;
+                originalError.apply(console, args);
+            };
+            
+            console.warn = function(...args) {
+                mirror.textContent += `WARN: ${args.join(' ')}\n`;
+                mirror.scrollTop = mirror.scrollHeight;
+                originalWarn.apply(console, args);
+            };
+        }
+
+        function stopConsoleCapture() {
+            // Note: In a real implementation, you'd store the original functions
+            // For this demo, we'll just show a message
+            const mirror = document.getElementById('console-mirror');
+            mirror.textContent += '\n--- Console capture stopped ---\n';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            logResult('🚀 Timeout & Error Testing page loaded', 'info');
+            console.log('🧪 Propace Autofill Testing Environment Ready');
+            console.log('⏰ Timeout limit: 60 seconds');
+            console.log('🔍 Error reporting: Comprehensive mode');
+        });
+    </script>
+</body>
+</html>

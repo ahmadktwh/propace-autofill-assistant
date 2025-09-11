@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Agent Test Form - OCR Extension Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .form-container {
+            padding: 30px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .form-group.full-width {
+            flex: 1 1 100%;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        .form-group input.auto-filled {
+            background-color: #e8f5e8;
+            border-color: #4CAF50;
+            animation: highlight 2s ease-out;
+        }
+
+        @keyframes highlight {
+            0% {
+                background-color: #c8e6c8;
+                transform: scale(1.02);
+            }
+            100% {
+                background-color: #e8f5e8;
+                transform: scale(1);
+            }
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #90caf9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .instructions h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions ol {
+            color: #1976d2;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        .submit-section {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(33, 150, 243, 0.4);
+        }
+
+        .field-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .field-counter.show {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Travel Agent Booking Form</h1>
+            <p>Test your OCR Extension auto-fill functionality</p>
+        </div>
+
+        <div class="form-container">
+            <div class="instructions">
+                <h3>🚀 How to Test OCR Extension:</h3>
+                <ol>
+                    <li>Upload an ID Card or Passport image in the extension</li>
+                    <li>Wait for data extraction to complete</li>
+                    <li>Click "Auto-Fill Current Page" button</li>
+                    <li>Watch this form get filled automatically!</li>
+                </ol>
+            </div>
+
+            <form id="testForm">
+                <!-- Personal Information Section -->
+                <div class="form-section">
+                    <h2>👤 Personal Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="full_name">Full Name *</label>
+                            <input type="text" id="full_name" name="full_name" placeholder="Enter full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select id="gender" name="gender">
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="father_name">Father Name</label>
+                            <input type="text" id="father_name" name="father_name" placeholder="Enter father name">
+                        </div>
+                        <div class="form-group">
+                            <label for="husband_name">Husband Name</label>
+                            <input type="text" id="husband_name" name="husband_name" placeholder="Enter husband name (if applicable)">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="date_of_birth">Date of Birth *</label>
+                            <input type="text" id="date_of_birth" name="dob" placeholder="DD/MM/YYYY">
+                        </div>
+                        <div class="form-group">
+                            <label for="nationality">Nationality</label>
+                            <input type="text" id="nationality" name="nationality" placeholder="Enter nationality">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Document Information Section -->
+                <div class="form-section">
+                    <h2>📄 Document Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="cnic">CNIC / National ID *</label>
+                            <input type="text" id="cnic" name="cnic" placeholder="12345-1234567-1">
+                        </div>
+                        <div class="form-group">
+                            <label for="passport_number">Passport Number</label>
+                            <input type="text" id="passport_number" name="passport" placeholder="Enter passport number">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="issue_date">Document Issue Date</label>
+                            <input type="text" id="issue_date" name="date_of_issue" placeholder="DD/MM/YYYY">
+                        </div>
+                        <div class="form-group">
+                            <label for="expiry_date">Document Expiry Date</label>
+                            <input type="text" id="expiry_date" name="date_of_expiry" placeholder="DD/MM/YYYY">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Address Information Section -->
+                <div class="form-section">
+                    <h2>🏠 Address Information</h2>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="current_address">Current Address</label>
+                            <textarea id="current_address" name="address" placeholder="Enter current address"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label for="permanent_address">Permanent Address</label>
+                            <textarea id="permanent_address" name="permanent_address" placeholder="Enter permanent address"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Travel Information Section -->
+                <div class="form-section">
+                    <h2>✈️ Travel Information</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="destination">Destination Country</label>
+                            <input type="text" id="destination" name="destination" placeholder="Enter destination">
+                        </div>
+                        <div class="form-group">
+                            <label for="travel_purpose">Purpose of Travel</label>
+                            <select id="travel_purpose" name="travel_purpose">
+                                <option value="">Select Purpose</option>
+                                <option value="tourism">Tourism</option>
+                                <option value="business">Business</option>
+                                <option value="education">Education</option>
+                                <option value="work">Work</option>
+                                <option value="family">Family Visit</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Test Fields -->
+                <div class="form-section">
+                    <h2>🧪 Additional Test Fields</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="customer_name">Customer Name</label>
+                            <input type="text" id="customer_name" name="customer_name" placeholder="Alternative name field">
+                        </div>
+                        <div class="form-group">
+                            <label for="guardian_name">Guardian Name</label>
+                            <input type="text" id="guardian_name" name="guardian_name" placeholder="Father/Husband name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="id_number">ID Number</label>
+                            <input type="text" id="id_number" name="id_number" placeholder="Alternative ID field">
+                        </div>
+                        <div class="form-group">
+                            <label for="document_number">Document Number</label>
+                            <input type="text" id="document_number" name="document_number" placeholder="Any document number">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn">Submit Application</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="field-counter" id="fieldCounter">
+        Fields Auto-Filled: <span id="filledCount">0</span>
+    </div>
+
+    <!-- Content script now handles all autofill functionality -->
+    <!-- No separate script needed - content-script.js handles everything -->
+</body>
+</html>
+            font-weight: bold;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .filled {
+            background-color: #e8f5e8 !important;
+            border-color: #4CAF50 !important;
+        }
+        .submit-btn {
+            background: #4CAF50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .submit-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Simple Test Form</h1>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter full name">
+            </div>
+
+            <div class="form-group">
+                <label for="father_name">Father Name:</label>
+                <input type="text" id="father_name" name="father_name" placeholder="Enter father name">
+            </div>
+
+            <div class="form-group">
+                <label for="cnic">CNIC Number:</label>
+                <input type="text" id="cnic" name="cnic" placeholder="12345-1234567-1">
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="text" id="dob" name="dob" placeholder="DD/MM/YYYY">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" rows="3" placeholder="Enter address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" placeholder="Enter phone number">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter email address">
+            </div>
+
+            <button type="submit" class="submit-btn">Submit Form</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form submitted successfully! (This is just a test)');
+        });
+    </script>
+</body>
+</html>

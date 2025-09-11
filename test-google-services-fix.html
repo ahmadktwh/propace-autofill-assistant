@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propace Autofill Test - Google Services Fix</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .info {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .success {
+            background: rgba(76, 175, 80, 0.3);
+            border: 2px solid #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Propace Autofill Test Form</h1>
+        <div class="info success">
+            <h3>✅ Google Services Fix Applied!</h3>
+            <p><strong>What's Fixed:</strong></p>
+            <ul>
+                <li>🚫 Extension now excludes Google Drive, Docs, Sheets automatically</li>
+                <li>🔍 Early detection of Google services with proper error messages</li>
+                <li>🛡️ Enhanced security handling for CSP-restricted pages</li>
+                <li>📱 Better user feedback for unsupported pages</li>
+                <li>⚡ Improved connection testing and error recovery</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>📋 How to Test:</h3>
+            <ol>
+                <li>Try autofill on this page (should work perfectly)</li>
+                <li>Navigate to Google Drive - extension will show proper error message</li>
+                <li>Try other regular websites - autofill will work normally</li>
+            </ol>
+        </div>
+
+        <form id="testForm">
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="full_name" placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone_number" placeholder="Enter your phone number">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" rows="3" placeholder="Enter your address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Country:</label>
+                <select id="country" name="country">
+                    <option value="">Select Country</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="India">India</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="United States">United States</option>
+                    <option value="United Kingdom">United Kingdom</option>
+                    <option value="Canada">Canada</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth:</label>
+                <input type="date" id="dob" name="date_of_birth">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <button type="submit">Submit Form</button>
+        </form>
+
+        <div class="info" style="margin-top: 30px;">
+            <h3>🔧 Technical Changes Made:</h3>
+            <ul>
+                <li><strong>Manifest.json:</strong> Added exclude_matches for Google services</li>
+                <li><strong>Content Script:</strong> Enhanced Google service detection</li>
+                <li><strong>Popup.js:</strong> Early URL validation and better error messages</li>
+                <li><strong>Error Handling:</strong> Specific Google service restriction messages</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Form submission prevented for testing. Your autofill extension should work on this form!');
+        });
+
+        // Add some visual feedback
+        console.log('🎯 Propace Autofill Test Page Loaded');
+        console.log('📋 This page should work perfectly with your autofill extension');
+        console.log('🚫 Google Drive and other Google services will now show proper error messages');
+    </script>
+</body>
+</html>

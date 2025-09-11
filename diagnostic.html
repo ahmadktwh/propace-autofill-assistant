@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propace Extension Diagnostic</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .header {
+            text-align: center;
+            border: 2px solid #00ff00;
+            padding: 20px;
+            margin-bottom: 20px;
+            background: #2a2a2a;
+        }
+        .console-output {
+            background: #000;
+            padding: 20px;
+            border: 1px solid #333;
+            min-height: 400px;
+            overflow-y: auto;
+        }
+        .run-button {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .run-button:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: #333;
+            padding: 15px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔍 PROPACE EXTENSION DIAGNOSTIC</h1>
+        <p>This page will help diagnose why your content script isn't loading</p>
+    </div>
+
+    <div class="instructions">
+        <h3>⚠️ IMPORTANT STEPS BEFORE TESTING:</h3>
+        <ol>
+            <li><strong>Go to chrome://extensions/</strong></li>
+            <li><strong>Find "Propace Autofill Assistant"</strong></li>
+            <li><strong>Click the RELOAD button (🔄 circular arrow)</strong></li>
+            <li><strong>Enable "Developer mode" (top right toggle)</strong></li>
+            <li><strong>Come back to this page and refresh (F5)</strong></li>
+            <li><strong>Open Developer Console (F12) → Console tab</strong></li>
+            <li><strong>Click the diagnostic button below</strong></li>
+        </ol>
+    </div>
+
+    <button class="run-button" onclick="runDiagnostic()">🔍 RUN DIAGNOSTIC</button>
+    <button class="run-button" onclick="tryManualLoad()">🔧 TRY MANUAL LOAD</button>
+    <button class="run-button" onclick="testBasicFunctions()">🧪 TEST FUNCTIONS</button>
+
+    <div class="console-output" id="output">
+        <div>Waiting for diagnostic... Click the button above after reloading extension.</div>
+    </div>
+
+    <script>
+        function log(message) {
+            const output = document.getElementById('output');
+            output.innerHTML += '<div>' + message + '</div>';
+            output.scrollTop = output.scrollHeight;
+            console.log(message);
+        }
+
+        function runDiagnostic() {
+            document.getElementById('output').innerHTML = '';
+            log('🔍 PROPACE DIAGNOSTIC: Starting...');
+            
+            // Load and run diagnostic script
+            fetch('diagnostic-script.js')
+                .then(response => response.text())
+                .then(script => {
+                    eval(script);
+                })
+                .catch(error => {
+                    log('❌ Could not load diagnostic script: ' + error.message);
+                    // Run inline diagnostic
+                    runInlineDiagnostic();
+                });
+        }
+
+        function runInlineDiagnostic() {
+            log('🔧 Running inline diagnostic...');
+            
+            // Check if main patterns are defined
+            if (typeof ADVANCED_FIELD_PATTERNS !== 'undefined') {
+                log('✅ ADVANCED_FIELD_PATTERNS is defined');
+            } else {
+                log('❌ ADVANCED_FIELD_PATTERNS is NOT defined');
+            }
+
+            // Check if main functions are available
+            const functionsToCheck = [
+                'debugPropaceFields',
+                'testPropaceAutofill', 
+                'analyzePropacePatterns',
+                'fillAdvancedFormFields'
+            ];
+
+            log('🔧 Checking Propace functions:');
+            functionsToCheck.forEach(funcName => {
+                if (typeof window[funcName] === 'function') {
+                    log(`✅ ${funcName} is available`);
+                } else {
+                    log(`❌ ${funcName} is NOT available`);
+                }
+            });
+
+            // Check Chrome extension APIs
+            if (typeof chrome !== 'undefined' && chrome.runtime) {
+                log('✅ Chrome extension APIs available');
+                log('📍 Extension ID: ' + chrome.runtime.id);
+            } else {
+                log('❌ Chrome extension APIs NOT available');
+            }
+
+            log('📄 Page URL: ' + window.location.href);
+            log('📄 Document ready state: ' + document.readyState);
+
+            // Check form fields
+            const formFields = document.querySelectorAll('input, select, textarea');
+            log('📝 Form fields found: ' + formFields.length);
+
+            log('🔍 DIAGNOSTIC COMPLETE');
+        }
+
+        function tryManualLoad() {
+            log('🔧 Attempting manual content script load...');
+            
+            const script = document.createElement('script');
+            script.src = 'content-script.js';
+            script.onload = () => {
+                log('✅ Content script loaded manually');
+                setTimeout(() => {
+                    runInlineDiagnostic();
+                }, 1000);
+            };
+            script.onerror = (error) => {
+                log('❌ Failed to load content script manually: ' + error.message);
+            };
+            document.head.appendChild(script);
+        }
+
+        function testBasicFunctions() {
+            log('🧪 Testing basic functions...');
+            
+            try {
+                if (typeof debugPropaceFields === 'function') {
+                    log('✅ debugPropaceFields found, testing...');
+                    const result = debugPropaceFields();
+                    log('📊 Debug result: ' + JSON.stringify(result, null, 2));
+                } else {
+                    log('❌ debugPropaceFields not found');
+                }
+            } catch (error) {
+                log('❌ Error testing debugPropaceFields: ' + error.message);
+            }
+
+            try {
+                if (typeof testPropaceAutofill === 'function') {
+                    log('✅ testPropaceAutofill found, testing...');
+                    const result = testPropaceAutofill();
+                    log('📊 Autofill result: ' + JSON.stringify(result, null, 2));
+                } else {
+                    log('❌ testPropaceAutofill not found');
+                }
+            } catch (error) {
+                log('❌ Error testing testPropaceAutofill: ' + error.message);
+            }
+        }
+
+        // Auto-run diagnostic when page loads
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                log('🔄 Page loaded. Please reload extension first, then click diagnostic button.');
+            }, 500);
+        });
+    </script>
+</body>
+</html>

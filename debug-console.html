@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propace Autofill Debug Console</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #252526;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .header {
+            background: #007acc;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+        .command-section {
+            background: #2d2d30;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .command {
+            background: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            color: #9cdcfe;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .command:hover {
+            background: #2d2d30;
+            border-color: #007acc;
+        }
+        .description {
+            color: #6a9955;
+            font-style: italic;
+            margin-bottom: 10px;
+        }
+        .button {
+            background: #0e639c;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background 0.3s ease;
+        }
+        .button:hover {
+            background: #1177bb;
+        }
+        .output {
+            background: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            padding: 15px;
+            margin-top: 10px;
+            min-height: 100px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 12px;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+        .success { color: #4ec9b0; }
+        .error { color: #f44747; }
+        .warning { color: #ffcc02; }
+        .info { color: #9cdcfe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Propace Autofill Debug Console</h1>
+            <p>Debug your extension and troubleshoot autofill issues</p>
+        </div>
+
+        <div class="command-section">
+            <h3>📋 Quick Diagnostic Commands</h3>
+            <div class="description">// Click any command to copy to clipboard, then paste in browser console</div>
+            
+            <div class="command" onclick="copyToClipboard('runFullDiagnostic()')">
+                runFullDiagnostic()
+            </div>
+            <div class="description">Runs complete system check</div>
+
+            <div class="command" onclick="copyToClipboard('checkPropaceLoaded()')">
+                checkPropaceLoaded()
+            </div>
+            <div class="description">Check if content script is loaded</div>
+
+            <div class="command" onclick="copyToClipboard('findAllFields()')">
+                findAllFields()
+            </div>
+            <div class="description">Find all form fields on current page</div>
+
+            <div class="command" onclick="copyToClipboard('testPropaceNow()')">
+                testPropaceNow()
+            </div>
+            <div class="description">Test autofill with sample data</div>
+        </div>
+
+        <div class="command-section">
+            <h3>🔍 Advanced Analysis</h3>
+            
+            <div class="command" onclick="copyToClipboard('debugPropaceFields()')">
+                debugPropaceFields()
+            </div>
+            <div class="description">AI-powered field analysis</div>
+
+            <div class="command" onclick="copyToClipboard('analyzePropacePatterns()')">
+                analyzePropacePatterns()
+            </div>
+            <div class="description">Pattern analysis and recommendations</div>
+
+            <div class="command" onclick="copyToClipboard('analyzePropaceStorage()')">
+                analyzePropaceStorage()
+            </div>
+            <div class="description">Cross-tab data analysis</div>
+        </div>
+
+        <div class="command-section">
+            <h3>🧪 Manual Testing</h3>
+            
+            <div class="command" onclick="copyToClipboard('manualFillTest()')">
+                manualFillTest()
+            </div>
+            <div class="description">Simple manual field fill test</div>
+
+            <div class="command" onclick="copyToClipboard('checkForErrors()')">
+                checkForErrors()
+            </div>
+            <div class="description">Check for JavaScript errors</div>
+
+            <div class="command" onclick="copyToClipboard('testExtensionMessaging()')">
+                testExtensionMessaging()
+            </div>
+            <div class="description">Test extension communication</div>
+        </div>
+
+        <div class="command-section">
+            <h3>⚡ Quick Actions</h3>
+            <button class="button" onclick="openTestForm()">Open Test Form</button>
+            <button class="button" onclick="reloadExtension()">Reload Extension</button>
+            <button class="button" onclick="clearConsole()">Clear Console</button>
+            <button class="button" onclick="copyAllCommands()">Copy All Commands</button>
+        </div>
+
+        <div class="command-section">
+            <h3>📝 Common Troubleshooting Steps</h3>
+            <div class="output">
+                <div class="info">1. First run: runFullDiagnostic()</div>
+                <div class="info">2. If content script not loaded:</div>
+                <div class="warning">   - Check browser console for errors</div>
+                <div class="warning">   - Reload the extension</div>
+                <div class="warning">   - Check manifest.json permissions</div>
+                <div class="info">3. If no fields found:</div>
+                <div class="warning">   - Use findAllFields() to check</div>
+                <div class="warning">   - Ensure page has form fields</div>
+                <div class="info">4. If autofill not working:</div>
+                <div class="warning">   - Try testPropaceNow() first</div>
+                <div class="warning">   - Check debugPropaceFields() output</div>
+                <div class="warning">   - Verify field patterns match</div>
+                <div class="success">5. If everything works: Great! 🎉</div>
+            </div>
+        </div>
+
+        <div class="command-section">
+            <h3>📊 Live Console Output</h3>
+            <div id="consoleOutput" class="output">
+                <div class="info">Console output will appear here...</div>
+                <div class="warning">Open browser DevTools (F12) for full console</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showNotification(`Copied: ${text}`);
+            }).catch(err => {
+                // Fallback for older browsers
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showNotification(`Copied: ${text}`);
+            });
+        }
+
+        function copyAllCommands() {
+            const commands = [
+                'runFullDiagnostic()',
+                'checkPropaceLoaded()',
+                'findAllFields()',
+                'testPropaceNow()',
+                'debugPropaceFields()',
+                'analyzePropacePatterns()',
+                'analyzePropaceStorage()',
+                'manualFillTest()',
+                'checkForErrors()',
+                'testExtensionMessaging()'
+            ].join('\n');
+            
+            copyToClipboard(commands);
+        }
+
+        function openTestForm() {
+            window.open('test-form.html', '_blank');
+        }
+
+        function reloadExtension() {
+            if (typeof chrome !== 'undefined' && chrome.runtime) {
+                chrome.runtime.reload();
+                showNotification('Extension reloaded');
+            } else {
+                showNotification('Chrome APIs not available', 'error');
+            }
+        }
+
+        function clearConsole() {
+            console.clear();
+            document.getElementById('consoleOutput').innerHTML = '<div class="info">Console cleared...</div>';
+            showNotification('Console cleared');
+        }
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: ${type === 'error' ? '#f44747' : '#4ec9b0'};
+                color: white;
+                padding: 10px 20px;
+                border-radius: 6px;
+                z-index: 9999;
+                font-family: 'Segoe UI', sans-serif;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: slideIn 0.3s ease-out;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease-in';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 2000);
+        }
+
+        // Capture console logs and display them
+        (function() {
+            const originalLog = console.log;
+            const originalError = console.error;
+            const originalWarn = console.warn;
+            const output = document.getElementById('consoleOutput');
+
+            function addToOutput(message, type) {
+                const div = document.createElement('div');
+                div.className = type;
+                div.textContent = message;
+                output.appendChild(div);
+                output.scrollTop = output.scrollHeight;
+            }
+
+            console.log = function(...args) {
+                originalLog.apply(console, arguments);
+                addToOutput(args.join(' '), 'info');
+            };
+
+            console.error = function(...args) {
+                originalError.apply(console, arguments);
+                addToOutput(args.join(' '), 'error');
+            };
+
+            console.warn = function(...args) {
+                originalWarn.apply(console, arguments);
+                addToOutput(args.join(' '), 'warning');
+            };
+        })();
+
+        // Add CSS for animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOut {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        console.log('🔧 Propace Debug Console loaded! Click commands to copy them.');
+    </script>
+</body>
+</html>

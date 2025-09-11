@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propace Autofill Assistant - Test Preview</title>
+    <link rel="stylesheet" href="popup.css">
+    <style>
+        /* Additional test styles */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: #f0f4f8;
+        }
+        
+        .test-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            z-index: 9999;
+        }
+        
+        .test-btn {
+            margin: 5px;
+            padding: 8px 12px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .test-btn:hover {
+            background: #2563eb;
+        }
+        
+        .step-counter {
+            display: inline-block;
+            background: #4b5563;
+            color: white;
+            width: 24px;
+            height: 24px;
+            text-align: center;
+            line-height: 24px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Test Controls -->
+    <div class="test-controls">
+        <h3>Test Steps</h3>
+        <button class="test-btn" id="step1">1️⃣ Upload Image</button>
+        <button class="test-btn" id="step2">2️⃣ Extract Data</button>
+        <button class="test-btn" id="step3">3️⃣ Show Results</button>
+        <button class="test-btn" id="reset">🔄 Reset</button>
+    </div>
+
+    <div class="container">
+        <div class="bg-animation">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+
+        <main id="main-content">
+            <!-- Enhanced Extractor View -->
+            <div id="extractor-view" class="view active-view">
+                <div class="view-header glass-effect">
+                    <!-- Main Header Row -->
+                    <div class="header-content">
+                        <div class="logo-section">
+                            <div class="logo-container">
+                                <svg class="logo-icon" viewBox="0 0 48 48" fill="none">
+                                    <defs>
+                                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:var(--primary);stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:var(--accent);stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="48" height="48" rx="12" fill="url(#logo-gradient)"/>
+                                    <path d="M15 12h4v24h-4zm8 0h8v4h-8zm0 10h6v4h-6z" fill="white"/>
+                                </svg>
+                            </div>
+                            <div class="app-info">
+                                <h1 class="app-title">Propace Autofill</h1>
+                                <p class="app-subtitle">AI-Powered ID Extraction</p>
+                            </div>
+                        </div>
+                        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                            <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="5"/>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                            <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="extractor-content">
+                    <!-- Enhanced Beautiful Upload Area -->
+                    <div id="upload-area" class="upload-area glass-effect">
+                        <input type="file" id="file-input" multiple hidden accept="image/*">
+                        
+                        <!-- Upload Placeholder (shown when no image) -->
+                        <div id="upload-placeholder" class="upload-placeholder">
+                            <!-- Animated Background Elements -->
+                            <div class="upload-bg-elements">
+                                <div class="upload-circle circle-1"></div>
+                                <div class="upload-circle circle-2"></div>
+                                <div class="upload-circle circle-3"></div>
+                            </div>
+                            
+                            <!-- Main Upload Content -->
+                            <div class="upload-content">
+                                <div class="upload-icon-container">
+                                    <div class="upload-icon-wrapper">
+                                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17,8 12,3 7,8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                        <div class="upload-icon-pulse"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="upload-text">
+                                    <h3 class="upload-title">Drop your document here</h3>
+                                    <p class="upload-subtitle">or <span class="upload-browse">browse files</span></p>
+                                    <p class="upload-hint">Supports ID cards, passports & documents</p>
+                                </div>
+                                
+                                <div class="supported-formats">
+                                    <div class="format-badge">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                        <span>PNG</span>
+                                    </div>
+                                    <div class="format-badge">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                        <span>JPG</span>
+                                    </div>
+                                    <div class="format-badge">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                        <span>WEBP</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Preview Area (shown when image is uploaded) -->
+                        <div id="image-preview-area" class="image-preview-area" hidden>
+                            <div class="preview-container">
+                                <div class="preview-image-wrapper">
+                                    <img id="preview-image" class="preview-image" src="https://i.pravatar.cc/300" alt="Uploaded document">
+                                    <div id="change-image-btn" class="image-change-overlay" title="Click to change image">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17,8 12,3 7,8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                        Change Image
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons - Extract Data stays here -->
+                    <section class="cta-section">
+                        <div class="controls">
+                            <button id="extract-btn" class="btn btn-primary gradient-btn" title="Upload an ID card or passport image to extract data">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M9 12l2 2 4-4"/>
+                                    <circle cx="12" cy="12" r="9"/>
+                                </svg>
+                                <span>Extract Data</span>
+                            </button>
+                            <button id="initial-autofill-btn" class="btn btn-accent gradient-btn" title="Extract data first, then use this to autofill forms">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                                <span>Autofill</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Results Area -->
+                    <div id="results-area" class="results-container" hidden>
+                        <!-- Loading Animation -->
+                        <div id="loader-container" class="loader-container">
+                            <div class="advanced-loader">
+                                <div class="loader-circle"></div>
+                                <div class="loader-pulse"></div>
+                            </div>
+                            <div class="loading-text">
+                                <h3>Processing Document</h3>
+                                <p>AI is extracting information...</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Container -->
+                        <div id="form-container" class="form-container glass-effect" hidden>
+                            <div id="multi-file-preview" class="file-preview-grid"></div>
+                            <div id="generated-form" class="generated-form">
+                                <!-- Sample extracted data will appear here -->
+                                <div class="form-field">
+                                    <label for="name">Name</label>
+                                    <input type="text" id="name" value="John Smith" class="form-input">
+                                </div>
+                                <div class="form-field">
+                                    <label for="date_of_birth">Date of Birth</label>
+                                    <input type="text" id="date_of_birth" value="15/05/1985" class="form-input">
+                                </div>
+                                <div class="form-field">
+                                    <label for="passport_no">Passport No</label>
+                                    <input type="text" id="passport_no" value="P12345678" class="form-input">
+                                </div>
+                                <div class="form-field">
+                                    <label for="country">Country</label>
+                                    <input type="text" id="country" value="United Arab Emirates" class="form-input">
+                                </div>
+                            </div>
+                            
+                            <!-- Autofill Action - Moves with extracted data -->
+                            <div class="autofill-section">
+                                <button id="results-autofill-btn" class="btn btn-accent gradient-btn" title="Use extracted data to autofill forms">
+                                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14,2 14,8 20,8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                    <span>Autofill</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Enhanced Footer -->
+        <footer class="footer glass-effect">
+            <!-- Developer Info Section -->
+            <div class="developer-section">
+                <div class="developer-avatar">
+                    <svg class="avatar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="developer-info">
+                    <p class="developer-name">DEVELOPED BY MUJEEB AHMAD</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Simple testing script
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const uploadArea = document.getElementById('upload-area');
+            const uploadPlaceholder = document.getElementById('upload-placeholder');
+            const imagePreviewArea = document.getElementById('image-preview-area');
+            const resultsArea = document.getElementById('results-area');
+            const loaderContainer = document.getElementById('loader-container');
+            const formContainer = document.getElementById('form-container');
+            const initialAutofillBtn = document.getElementById('initial-autofill-btn');
+            const resultsAutofillBtn = document.getElementById('results-autofill-btn');
+            const extractBtn = document.getElementById('extract-btn');
+            
+            // Test Steps
+            document.getElementById('step1').addEventListener('click', function() {
+                // Upload Image
+                uploadPlaceholder.hidden = true;
+                imagePreviewArea.hidden = false;
+                uploadArea.classList.add('has-image');
+                initialAutofillBtn.hidden = true;
+            });
+            
+            document.getElementById('step2').addEventListener('click', function() {
+                // Extract Data - Show Loader
+                resultsArea.hidden = false;
+                loaderContainer.hidden = false;
+                formContainer.hidden = true;
+                
+                // Simulate loading (2 seconds)
+                setTimeout(function() {
+                    loaderContainer.hidden = true;
+                    formContainer.hidden = false;
+                    initialAutofillBtn.hidden = false; // Show initial autofill button
+                    resultsAutofillBtn.hidden = false; // Show results autofill button
+                    
+                    // Auto-scroll to results
+                    resultsArea.scrollIntoView({ behavior: 'smooth' });
+                }, 2000);
+            });
+            
+            document.getElementById('step3').addEventListener('click', function() {
+                // Show notification when autofill is clicked
+                alert('Autofill function triggered! This would normally send data to the active page.');
+            });
+            
+            document.getElementById('reset').addEventListener('click', function() {
+                // Reset to initial state
+                uploadPlaceholder.hidden = false;
+                imagePreviewArea.hidden = true;
+                uploadArea.classList.remove('has-image');
+                resultsArea.hidden = true;
+                loaderContainer.hidden = true;
+                formContainer.hidden = true;
+                initialAutofillBtn.hidden = true;
+                
+                // Scroll back to top
+                window.scrollTo(0, 0);
+            });
+            
+            // Add click handlers to autofill buttons
+            initialAutofillBtn.addEventListener('click', function() {
+                alert('Initial Autofill button clicked! ID: initial-autofill-btn');
+            });
+            
+            resultsAutofillBtn.addEventListener('click', function() {
+                alert('Results Autofill button clicked! ID: results-autofill-btn');
+            });
+            
+            // Theme toggle
+            document.getElementById('themeToggle').addEventListener('click', function() {
+                const body = document.body;
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                body.setAttribute('data-theme', newTheme);
+            });
+            
+            // Hide initial autofill button at start
+            initialAutofillBtn.hidden = true;
+        });
+    </script>
+</body>
+</html>

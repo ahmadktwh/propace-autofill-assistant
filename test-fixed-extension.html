@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Extension Test - Propace Autofill</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .success-badge {
+            background: #28a745;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .form-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #007bff;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+        }
+        .test-button {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            margin: 8px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+        .console-preview {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            margin: 20px 0;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="success-badge">✅ Extension Fixed!</div>
+        <h1>🚀 Propace Autofill - All Errors Resolved</h1>
+        
+        <div class="status success">
+            <strong>🎉 Success:</strong> All syntax errors in content-script.js have been resolved! The extension is now ready for testing.
+        </div>
+
+        <div class="form-section">
+            <h2>📝 Test Form - Ready for Autofill</h2>
+            <div class="form-group">
+                <label for="fullName">Full Name:</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Enter your full name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number">
+            </div>
+            <div class="form-group">
+                <label for="address">Address:</label>
+                <textarea id="address" name="address" rows="3" placeholder="Enter your address"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="city">City:</label>
+                <input type="text" id="city" name="city" placeholder="Enter your city">
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>🧪 Test Controls</h2>
+            <button class="test-button" onclick="testAutofill()">🚀 Test Autofill Extension</button>
+            <button class="test-button" onclick="clearFields()">🗑️ Clear All Fields</button>
+            <button class="test-button" onclick="showConsoleInstructions()">📋 Console Instructions</button>
+        </div>
+
+        <div class="status info">
+            <strong>📋 Testing Instructions:</strong>
+            <ol style="margin: 10px 0; padding-left: 20px;">
+                <li>Make sure the Propace extension is installed in Chrome</li>
+                <li>Open Chrome DevTools (F12) and go to Console tab</li>
+                <li>Click "Test Autofill Extension" button above</li>
+                <li>Watch the console for detailed logs and error reporting</li>
+                <li>Check if form fields get filled automatically</li>
+            </ol>
+        </div>
+
+        <div id="console-preview" class="console-preview" style="display: none;">
+📊 Expected Console Output:
+
+🚀 Propace Advanced Receiver initialized
+🛡️ Propace Enterprise Autofill System - Starting...
+⏰ Timeout Limit: 60 seconds
+📊 Data fields to process: 5
+
+🔍 Pre-flight System Diagnostics
+📄 Page State: complete
+📝 Form elements: 1 forms, 5 input fields
+🔧 Extension APIs: Available
+
+📝 Method 1: Standard Autofill
+⏱️ Starting standard autofill...
+✅ Standard autofill: 5/5 fields
+
+📊 PROPACE AUTOFILL - FINAL REPORT
+🎯 SUCCESS RATE: 100% (5/5 fields)
+⏱️ EXECUTION TIME: 2500ms
+🔧 METHODS USED: standard
+🛡️ BYPASS REQUIRED: No
+🎉 AUTOFILL SUCCESSFUL - Most fields filled correctly!
+        </div>
+
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        function testAutofill() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = `
+                <div class="status info">
+                    <strong>🚀 Testing Started:</strong> Extension autofill test initiated. Check Chrome DevTools Console for detailed logs.
+                </div>
+            `;
+
+            // Simulate extension trigger
+            console.log('🧪 Manual test trigger - Propace Autofill');
+            
+            // Test data
+            const testData = {
+                fullName: 'Ahmad Ali Khan',
+                email: 'ahmad.khan@example.com',
+                phone: '+92-300-1234567',
+                address: '123 Test Street, Model Town',
+                city: 'Lahore'
+            };
+
+            // Try to trigger extension (this would normally be done via popup)
+            window.postMessage({
+                type: 'PROPACE_AUTOFILL_TEST',
+                data: testData
+            }, '*');
+
+            // Show test completion after delay
+            setTimeout(() => {
+                checkTestResults();
+            }, 3000);
+        }
+
+        function clearFields() {
+            const inputs = document.querySelectorAll('input, textarea');
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+            });
+            
+            const results = document.getElementById('test-results');
+            results.innerHTML = `
+                <div class="status info">
+                    <strong>🗑️ Cleared:</strong> All form fields have been cleared.
+                </div>
+            `;
+        }
+
+        function showConsoleInstructions() {
+            const preview = document.getElementById('console-preview');
+            preview.style.display = preview.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function checkTestResults() {
+            const inputs = document.querySelectorAll('input, textarea');
+            let filledCount = 0;
+            
+            inputs.forEach(input => {
+                if (input.value.trim()) {
+                    filledCount++;
+                    input.style.backgroundColor = '#d4edda'; // Green highlight
+                }
+            });
+
+            const results = document.getElementById('test-results');
+            const successRate = Math.round((filledCount / inputs.length) * 100);
+            
+            if (successRate >= 80) {
+                results.innerHTML = `
+                    <div class="status success">
+                        <strong>✅ Test Successful:</strong> ${filledCount}/${inputs.length} fields filled (${successRate}% success rate). Extension is working properly!
+                    </div>
+                `;
+            } else if (successRate > 0) {
+                results.innerHTML = `
+                    <div class="status" style="background: #fff3cd; color: #856404; border-left: 4px solid #ffc107;">
+                        <strong>⚠️ Partial Success:</strong> ${filledCount}/${inputs.length} fields filled (${successRate}% success rate). Check console for details.
+                    </div>
+                `;
+            } else {
+                results.innerHTML = `
+                    <div class="status" style="background: #f8d7da; color: #721c24; border-left: 4px solid #dc3545;">
+                        <strong>❌ Test Failed:</strong> No fields were filled. Check if extension is installed and console for error details.
+                    </div>
+                `;
+            }
+        }
+
+        // Listen for extension messages
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'PROPACE_AUTOFILL_TEST') {
+                console.log('📨 Test message received by page');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌟 Fixed Extension Test Page Loaded');
+            console.log('✅ All syntax errors resolved');
+            console.log('🎯 Ready for comprehensive testing');
+        });
+    </script>
+</body>
+</html>

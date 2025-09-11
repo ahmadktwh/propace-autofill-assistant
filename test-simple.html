@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Propace Simple Test</title>
+</head>
+<body>
+    <h1>Propace Communication Test</h1>
+    <form id="test-form">
+        <input type="text" name="name" placeholder="Name">
+        <input type="email" name="email" placeholder="Email">
+    </form>
+    <div id="status"></div>
+    <script>
+        // Log when page loads
+        console.log('Test page loaded');
+        
+        // Listen for messages
+        window.addEventListener('message', function(event) {
+            console.log('Page received message:', event.data);
+            document.getElementById('status').textContent = 'Message received: ' + JSON.stringify(event.data);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propace Autofill Test Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .required {
+            color: red;
+        }
+        .test-instructions {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+        .debug-section {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border-left: 4px solid #ffc107;
+        }
+        .debug-button {
+            background: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .debug-button:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>🎯 Propace Autofill Test Form</h1>
+        
+        <div class="test-instructions">
+            <h3>Testing Instructions:</h3>
+            <ol>
+                <li>Make sure Propace extension is loaded and reloaded</li>
+                <li>Right-click on this page → Inspect → Console tab</li>
+                <li>Run: <code>debugPropaceFields()</code></li>
+                <li>Run: <code>testPropaceAutofill()</code></li>
+                <li>Watch the magic happen! 🪄</li>
+            </ol>
+        </div>
+
+        <form id="test-form">
+            <div class="form-group">
+                <label for="name">Full Name <span class="required">*</span></label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="father-name">Father Name</label>
+                <input type="text" id="father-name" name="father_name" placeholder="Enter father's name">
+            </div>
+
+            <div class="form-group">
+                <label for="husband-name">Husband Name</label>
+                <input type="text" id="husband-name" name="husband_name" placeholder="Enter husband's name">
+            </div>
+
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="date_of_birth">
+            </div>
+
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="nationality">Nationality</label>
+                <input type="text" id="nationality" name="nationality" placeholder="Enter nationality">
+            </div>
+
+            <div class="form-group">
+                <label for="cnic">CNIC Number</label>
+                <input type="text" id="cnic" name="id_number" placeholder="12345-6789012-3" pattern="\d{5}-\d{7}-\d{1}">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone_number" placeholder="+92-300-1234567">
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your.email@example.com">
+            </div>
+
+            <div class="form-group">
+                <label for="address">Current Address</label>
+                <textarea id="address" name="current_address" rows="3" placeholder="Enter your complete address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="permanent-address">Permanent Address</label>
+                <textarea id="permanent-address" name="permanent_address" rows="3" placeholder="Enter permanent address"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="place-of-birth">Place of Birth</label>
+                <input type="text" id="place-of-birth" name="place_of_birth" placeholder="Enter place of birth">
+            </div>
+        </form>
+
+        <div class="debug-section">
+            <h3>🔧 Debug Console Commands</h3>
+            <p>Open browser console (F12) and try these commands:</p>
+            <button class="debug-button" onclick="runDebugCommand('debugPropaceFields()')">debugPropaceFields()</button>
+            <button class="debug-button" onclick="runDebugCommand('testPropaceAutofill()')">testPropaceAutofill()</button>
+            <button class="debug-button" onclick="runDebugCommand('analyzePropacePatterns()')">analyzePropacePatterns()</button>
+            <button class="debug-button" onclick="runDebugCommand('analyzePropaceStorage()')">analyzePropaceStorage()</button>
+        </div>
+    </div>
+
+    <script>
+        function runDebugCommand(command) {
+            console.log(`🔧 Running: ${command}`);
+            try {
+                eval(command);
+            } catch (error) {
+                console.error(`❌ Error running ${command}:`, error);
+                console.log(`💡 Make sure Propace extension is loaded and you're in the webpage console!`);
+            }
+        }
+
+        // Log when page loads
+        console.log('🎯 Propace Test Form loaded successfully!');
+        console.log('📋 Available test commands:');
+        console.log('   - debugPropaceFields()');
+        console.log('   - testPropaceAutofill()');
+        console.log('   - analyzePropacePatterns()');
+        console.log('   - analyzePropaceStorage()');
+    </script>
+</body>
+</html>

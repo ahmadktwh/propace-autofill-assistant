@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fallback System Test - Propace Autofill</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        .tricky-field {
+            border: 2px solid #ff6b6b;
+            background-color: #fff5f5;
+        }
+        .hidden-field {
+            display: none;
+        }
+        .shadow-host {
+            border: 2px solid #4ecdc4;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f0fffe;
+        }
+        .test-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background-color: #45a049;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success { background-color: #d4edda; color: #155724; }
+        .info { background-color: #d1ecf1; color: #0c5460; }
+        .warning { background-color: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Propace Autofill - Fallback System Test</h1>
+    <div class="status info">
+        <strong>Test Purpose:</strong> Verify that automatic fallback mechanisms work properly when primary methods fail.
+    </div>
+
+    <!-- Standard Form Section -->
+    <div class="test-section">
+        <h2>📝 Standard Form Fields (Should work with primary method)</h2>
+        <div class="form-group">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" placeholder="Enter first name">
+        </div>
+        <div class="form-group">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Enter last name">
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Enter email address">
+        </div>
+    </div>
+
+    <!-- Tricky Fields Section -->
+    <div class="test-section">
+        <h2>🎯 Tricky Fields (Tests manual field mapping)</h2>
+        <div class="form-group">
+            <label for="weird_name_field">Name (Unusual ID):</label>
+            <input type="text" id="weird_name_field" class="tricky-field" placeholder="Tests smart matching">
+        </div>
+        <div class="form-group">
+            <label for="contact_info">Contact Info:</label>
+            <input type="text" id="contact_info" class="tricky-field" placeholder="Should match phone/email">
+        </div>
+        <div class="form-group">
+            <label>Address (No ID):</label>
+            <input type="text" class="tricky-field" placeholder="No ID, only placeholder">
+        </div>
+    </div>
+
+    <!-- Dynamic Content Section -->
+    <div class="test-section">
+        <h2>⏰ Dynamic Content (Tests timeout-based filling)</h2>
+        <div id="dynamic-container">
+            <p>Dynamic fields will appear in 2 seconds...</p>
+        </div>
+        <button class="test-button" onclick="loadDynamicFields()">Load Dynamic Fields</button>
+    </div>
+
+    <!-- Shadow DOM Section -->
+    <div class="test-section">
+        <h2>🌒 Shadow DOM Components (Tests shadow DOM bypass)</h2>
+        <div class="shadow-host" id="shadow-host">
+            <p>Shadow DOM fields are hidden below...</p>
+        </div>
+    </div>
+
+    <!-- Emergency Fallback Section -->
+    <div class="test-section">
+        <h2>🚨 Emergency Fallback Fields</h2>
+        <div class="form-group">
+            <input type="text" placeholder="Field with no name/id (emergency test)">
+        </div>
+        <div class="form-group">
+            <textarea placeholder="Textarea for testing basic DOM fallback"></textarea>
+        </div>
+        <div class="form-group">
+            <select>
+                <option value="">Select option (dropdown test)</option>
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Hidden Fields -->
+    <input type="hidden" name="hiddenField" value="should-not-be-filled">
+    <input type="submit" value="Submit (should not be filled)">
+
+    <!-- Test Controls -->
+    <div class="test-section">
+        <h2>🧪 Test Controls</h2>
+        <button class="test-button" onclick="testExtension()">Test Propace Autofill</button>
+        <button class="test-button" onclick="clearAllFields()">Clear All Fields</button>
+        <button class="test-button" onclick="checkFieldStatus()">Check Field Status</button>
+        
+        <div id="test-results"></div>
+    </div>
+
+    <script>
+        // Load dynamic fields after delay
+        function loadDynamicFields() {
+            setTimeout(() => {
+                const container = document.getElementById('dynamic-container');
+                container.innerHTML = `
+                    <div class="form-group">
+                        <label for="dynamic-name">Dynamic Name Field:</label>
+                        <input type="text" id="dynamic-name" name="dynamicName" placeholder="Loaded dynamically">
+                    </div>
+                    <div class="form-group">
+                        <label for="dynamic-email">Dynamic Email Field:</label>
+                        <input type="email" id="dynamic-email" name="dynamicEmail" placeholder="Dynamic email field">
+                    </div>
+                `;
+                showStatus('Dynamic fields loaded!', 'success');
+            }, 2000);
+        }
+
+        // Create shadow DOM
+        function createShadowDOM() {
+            const shadowHost = document.getElementById('shadow-host');
+            if (!shadowHost.shadowRoot) {
+                const shadow = shadowHost.attachShadow({ mode: 'open' });
+                shadow.innerHTML = `
+                    <style>
+                        input { 
+                            width: 100%; 
+                            padding: 8px; 
+                            margin: 5px 0; 
+                            border: 1px solid #ccc; 
+                            border-radius: 4px;
+                        }
+                    </style>
+                    <div>
+                        <label>Shadow Name:</label>
+                        <input type="text" name="shadowName" placeholder="Inside shadow DOM">
+                        <label>Shadow Email:</label>
+                        <input type="email" name="shadowEmail" placeholder="Shadow email field">
+                    </div>
+                `;
+            }
+        }
+
+        // Test extension functionality
+        function testExtension() {
+            showStatus('Testing Propace Autofill Extension...', 'info');
+            
+            // Trigger extension (this would normally be done via popup)
+            const testData = {
+                firstName: 'Ahmad',
+                lastName: 'Ali',
+                email: 'ahmad.ali@example.com',
+                phone: '+92-300-1234567',
+                address: '123 Test Street, Lahore',
+                name: 'Ahmad Ali',
+                contact: '+92-300-1234567'
+            };
+            
+            // Simulate extension communication
+            window.postMessage({
+                type: 'PROPACE_AUTOFILL_TEST',
+                data: testData
+            }, '*');
+            
+            setTimeout(checkFieldStatus, 3000);
+        }
+
+        // Clear all fields
+        function clearAllFields() {
+            const fields = document.querySelectorAll('input[type="text"], input[type="email"], textarea, select');
+            fields.forEach(field => {
+                if (field.type === 'select-one') {
+                    field.selectedIndex = 0;
+                } else {
+                    field.value = '';
+                }
+            });
+            
+            // Clear shadow DOM fields
+            const shadowHost = document.getElementById('shadow-host');
+            if (shadowHost.shadowRoot) {
+                const shadowFields = shadowHost.shadowRoot.querySelectorAll('input');
+                shadowFields.forEach(field => field.value = '');
+            }
+            
+            showStatus('All fields cleared!', 'info');
+        }
+
+        // Check field filling status
+        function checkFieldStatus() {
+            const results = document.getElementById('test-results');
+            const fields = document.querySelectorAll('input[type="text"], input[type="email"], textarea');
+            
+            let filled = 0;
+            let total = fields.length;
+            let details = [];
+            
+            fields.forEach((field, index) => {
+                if (field.value.trim()) {
+                    filled++;
+                    details.push(`✅ Field ${index + 1}: "${field.value}"`);
+                } else {
+                    details.push(`❌ Field ${index + 1}: Empty`);
+                }
+            });
+            
+            // Check shadow DOM
+            const shadowHost = document.getElementById('shadow-host');
+            if (shadowHost.shadowRoot) {
+                const shadowFields = shadowHost.shadowRoot.querySelectorAll('input');
+                shadowFields.forEach((field, index) => {
+                    total++;
+                    if (field.value.trim()) {
+                        filled++;
+                        details.push(`✅ Shadow Field ${index + 1}: "${field.value}"`);
+                    } else {
+                        details.push(`❌ Shadow Field ${index + 1}: Empty`);
+                    }
+                });
+            }
+            
+            const percentage = total > 0 ? Math.round((filled / total) * 100) : 0;
+            
+            results.innerHTML = `
+                <div class="status ${percentage > 70 ? 'success' : percentage > 30 ? 'warning' : 'info'}">
+                    <strong>Autofill Results:</strong> ${filled}/${total} fields filled (${percentage}%)
+                </div>
+                <details>
+                    <summary>Field Details</summary>
+                    <ul>
+                        ${details.map(detail => `<li>${detail}</li>`).join('')}
+                    </ul>
+                </details>
+            `;
+        }
+
+        // Show status message
+        function showStatus(message, type = 'info') {
+            const results = document.getElementById('test-results');
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            results.appendChild(statusDiv);
+            
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.parentNode.removeChild(statusDiv);
+                }
+            }, 5000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            createShadowDOM();
+            showStatus('Fallback test page loaded. Click "Test Propace Autofill" to begin!', 'info');
+        });
+
+        // Listen for extension messages
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'PROPACE_AUTOFILL_TEST') {
+                showStatus('Received test data from extension!', 'success');
+            }
+        });
+    </script>
+</body>
+</html>

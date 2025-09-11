@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Propace Autofill Assistant</title>
+    <style>
+        /* Fallback minimal styles in case popup.css fails */
+        html, body { margin:0; padding:0; }
+        body { font-family: system-ui, Segoe UI, Roboto, sans-serif; background:#0f172a; color:#f8fafc; }
+        .container { width:420px; height:600px; padding:12px; }
+        .fallback-msg { display:none; background:#1e293b; color:#e2e8f0; border:1px solid #334155; border-radius:8px; padding:10px; font-size:12px; }
+    </style>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body data-theme="light">
+    <div class="container">
+        <div id="fallback" class="fallback-msg">
+            The enhanced UI didn't initialize. Please reload the extension. If this persists, share the popup Console logs.
+            <button onclick="document.body.classList.add('force-visible'); this.textContent='Debug mode ON';" style="margin-top:8px;padding:4px;background:#334155;color:white;border:0;border-radius:4px;cursor:pointer;">Force UI Visible</button>
+        </div>
+
+        <!-- Quick Access Hint -->
+        <div id="quick-access-hint" class="quick-access-hint">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M9 12l2 2 4-4"/>
+                <circle cx="12" cy="12" r="9"/>
+            </svg>
+            <span>Click the extension icon anytime to toggle this panel</span>
+        </div>
+        <!-- Animated Background Elements -->
+        <div class="bg-animation">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+
+        <main id="main-content">
+            <!-- Enhanced Extractor View -->
+            <div id="extractor-view" class="view active-view">
+                <div class="view-header glass-effect">
+                    <!-- Top Navigation Row -->
+                    <div class="top-nav-row">
+                        <div class="spacer"></div>
+                        <div class="nav-actions">
+                            <button id="open-history-page-btn" class="nav-btn-header" title="View History">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <polyline points="12,6 12,12 16,14"/>
+                                </svg>
+                                <span>History</span>
+                            </button>
+
+                            <button id="open-test-form-header-btn" class="nav-btn-header" title="Open Test Form">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                    <line x1="10" y1="9" x2="8" y2="9"/>
+                                </svg>
+                                <span>Test Form</span>
+                            </button>
+
+                            <button id="open-standalone-settings-btn" class="nav-btn-header" title="Open Settings Page">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15,3 21,3 21,9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                                <span>Settings Page</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Main Header Row -->
+                    <div class="header-content">
+                        <div class="logo-section">
+                            <div class="logo-container">
+                                <svg class="logo-icon" viewBox="0 0 48 48" fill="none">
+                                    <defs>
+                                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" style="stop-color:var(--primary);stop-opacity:1" />
+                                            <stop offset="100%" style="stop-color:var(--accent);stop-opacity:1" />
+                                        </linearGradient>
+                                    </defs>
+                                    <rect width="48" height="48" rx="12" fill="url(#logo-gradient)"/>
+                                    <path d="M15 12h4v24h-4zm8 0h8v4h-8zm0 10h6v4h-6z" fill="white"/>
+                                </svg>
+                            </div>
+                            <div class="app-info">
+                                <h1 class="app-title">Propace Autofill</h1>
+                                <p class="app-subtitle">Scan Extract Autofill</p>
+                            </div>
+                        </div>
+                        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                            <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="5"/>
+                                <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                            <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="extractor-content">
+                    <!-- Enhanced Beautiful Upload Area -->
+                    <div id="upload-area" class="upload-area glass-effect">
+                        <input type="file" id="file-input" multiple hidden accept="image/*">
+                        
+                        <!-- Upload Placeholder (shown when no image) -->
+                        <div id="upload-placeholder" class="upload-placeholder">
+                            <!-- Animated Background Elements -->
+                            <div class="upload-bg-elements">
+                                <div class="upload-circle circle-1"></div>
+                                <div class="upload-circle circle-2"></div>
+                                <div class="upload-circle circle-3"></div>
+                            </div>
+                            
+                            <!-- Main Upload Content -->
+                            <div class="upload-content">
+                                <div class="upload-icon-container">
+                                    <div class="upload-icon-wrapper">
+                                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17,8 12,3 7,8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                        <div class="upload-icon-pulse"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="upload-text">
+                                    <h3 class="upload-title">Drop your document here</h3>
+                                    <p class="upload-subtitle">or <span class="upload-browse">browse files</span></p>
+                                    <p class="upload-hint">Supports ID cards, passports & documents</p>
+                                </div>
+                                
+                                <div class="supported-formats">
+                                    <div class="format-badge">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                        <span>PNG</span>
+                                    </div>
+                                    <div class="format-badge">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                        <span>JPG</span>
+                                    </div>
+                                    <div class="format-badge">
+                                        <svg viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                                        </svg>
+                                        <span>WEBP</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Drag Overlay -->
+                            <div class="drag-overlay">
+                                <div class="drag-content">
+                                    <svg class="drag-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17,8 12,3 7,8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                    <h3>Drop to upload</h3>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Image Preview Area (shown when image is uploaded) -->
+                        <div id="image-preview-area" class="image-preview-area" hidden>
+                            <div class="preview-container">
+                                <div class="preview-image-wrapper">
+                                    <img id="preview-image" class="preview-image" alt="Uploaded document">
+                                    <div id="change-image-btn" class="image-change-overlay" title="Click to change image">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="17,8 12,3 7,8"/>
+                                            <line x1="12" y1="3" x2="12" y2="15"/>
+                                        </svg>
+                                        Change Image
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA Buttons - Extract Data stays here -->
+                    <section class="cta-section">
+                        <div class="controls">
+                            <button id="extract-btn" class="btn btn-primary gradient-btn btn-inactive" title="Upload an ID card or passport image to extract data">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M9 12l2 2 4-4"/>
+                                    <circle cx="12" cy="12" r="9"/>
+                                </svg>
+                                <span>Extract Data</span>
+                            </button>
+                            <button id="initial-autofill-btn" class="btn btn-accent gradient-btn" title="Extract data first, then use this to autofill forms">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14,2 14,8 20,8"/>
+                                    <line x1="16" y1="13" x2="8" y2="13"/>
+                                    <line x1="16" y1="17" x2="8" y2="17"/>
+                                </svg>
+                                <span>Autofill</span>
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Results Area -->
+                    <div id="results-area" class="results-container" hidden>
+                        <!-- Loading Animation -->
+                        <div id="loader-container" class="loader-container">
+                            <div class="advanced-loader">
+                                <div class="loader-circle"></div>
+                                <div class="loader-pulse"></div>
+                            </div>
+                            <div class="loading-text">
+                                <h3>Processing Document</h3>
+                                <p>AI is extracting information...</p>
+                                <div class="progress-bar">
+                                    <div class="progress-fill"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Container -->
+                        <div id="form-container" class="form-container glass-effect" hidden>
+                            <div id="multi-file-preview" class="file-preview-grid"></div>
+                            <div id="generated-form" class="generated-form"></div>
+                            
+                            <!-- Autofill Action - Moves with extracted data -->
+                            <div class="autofill-section">
+                                <button id="results-autofill-btn" class="btn btn-accent gradient-btn" title="Use extracted data to autofill forms">
+                                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                        <polyline points="14,2 14,8 20,8"/>
+                                        <line x1="16" y1="13" x2="8" y2="13"/>
+                                        <line x1="16" y1="17" x2="8" y2="17"/>
+                                    </svg>
+                                    <span>Autofill</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced History View -->
+            <div id="history-view" class="view">
+                <div class="view-header glass-effect">
+                    <div class="header-content">
+                        <h2 class="view-title">Extraction History</h2>
+                        <button id="clear-history-btn" class="btn btn-secondary btn-sm">Clear All</button>
+                    </div>
+                </div>
+                <div class="history-list">
+                    <div class="empty-state" hidden>
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <circle cx="12" cy="12" r="10"/>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+                                <line x1="9" y1="9" x2="9.01" y2="9"/>
+                                <line x1="15" y1="9" x2="15.01" y2="9"/>
+                            </svg>
+                        </div>
+                        <p>No extractions yet</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Enhanced Footer -->
+        <footer class="footer glass-effect">
+            <!-- Developer Info Section -->
+            <div class="developer-section">
+                <div class="developer-avatar">
+                    <svg class="avatar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                    <div class="avatar-glow"></div>
+                </div>
+                <div class="developer-info">
+                    <p class="developer-name">DEVELOPED BY MUJEEB AHMAD</p>
+                </div>
+                <div class="tech-badge">
+                    <svg class="tech-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 12h8"/>
+                        <path d="M12 8v8"/>
+                    </svg>
+                    <span>AI Powered</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Enhanced Modal -->
+    <div id="history-modal" class="modal-overlay" hidden style="display:none; visibility:hidden;">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content glass-effect">
+            <div class="modal-header">
+                <h2 id="modal-title">Extraction Details</h2>
+                <button id="modal-close-btn" class="modal-close-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body"></div>
+            <div class="modal-footer">
+                <button id="modal-delete-btn" class="btn btn-danger">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="3,6 5,6 21,6"/>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                    </svg>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notification-container" class="notification-container">
+        <!-- Notifications will be dynamically inserted here -->
+    </div>
+
+    <script src="popup.js"></script>
+    
+</body>
+</html>

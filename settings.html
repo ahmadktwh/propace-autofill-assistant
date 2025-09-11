@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Propace Autofill Assistant</title>
+    <link rel="stylesheet" href="popup.css">
+    <style>
+        body { 
+            background: var(--bg-primary); 
+            color: var(--text-primary); 
+            margin: 0; 
+            padding: 20px; 
+            font-family: var(--font-family);
+        }
+        .settings-container { 
+            max-width: 800px; 
+            margin: 0 auto; 
+            background: var(--glass-bg); 
+            border-radius: 20px; 
+            box-shadow: var(--glass-shadow); 
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+        
+        /* Header with Back Button */
+        .settings-header { 
+            background: var(--primary); 
+            color: white; 
+            padding: 16px 24px; 
+            display: flex; 
+            align-items: center; 
+            gap: 16px;
+        }
+        .back-btn { 
+            background: rgba(255,255,255,0.2); 
+            border: none; 
+            color: white; 
+            padding: 8px 16px; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.3); }
+        .settings-title { 
+            font-size: 1.5rem; 
+            font-weight: 600; 
+            margin: 0;
+        }
+        
+        /* Settings Content */
+        .settings-content { padding: 24px; }
+        
+        /* Setting Cards */
+        .setting-card { 
+            background: var(--bg-card); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .setting-header { 
+            display: flex; 
+            align-items: center; 
+            gap: 12px; 
+            margin-bottom: 16px;
+        }
+        .setting-icon { 
+            width: 24px; 
+            height: 24px; 
+            color: var(--primary);
+        }
+        .setting-header h3 { 
+            margin: 0; 
+            font-size: 1.1rem; 
+            font-weight: 600;
+        }
+        
+        /* API Key Section */
+        .api-input-group { 
+            display: flex; 
+            gap: 8px; 
+            margin-bottom: 12px;
+        }
+        .api-input { 
+            flex: 1; 
+            padding: 12px; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 8px; 
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .api-input:focus { 
+            outline: none; 
+            border-color: var(--primary); 
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        /* Buttons */
+        .btn { 
+            padding: 10px 16px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 14px; 
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .btn-primary { 
+            background: var(--primary); 
+            color: white;
+        }
+        .btn-primary:hover { background: var(--primary-light); }
+        .btn-danger { 
+            background: var(--danger); 
+            color: white;
+        }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-small { 
+            padding: 6px 12px; 
+            font-size: 12px;
+        }
+        
+        /* Theme Selection */
+        .theme-options { 
+            display: flex; 
+            gap: 12px;
+        }
+        .theme-option { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            padding: 8px 12px; 
+            border: 1px solid var(--glass-border); 
+            border-radius: 8px; 
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .theme-option:hover { background: var(--bg-secondary); }
+        .theme-option input { margin: 0; }
+        
+        /* Field Selection */
+        .fields-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+            gap: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            background: var(--bg-secondary);
+        }
+        .field-option { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            padding: 10px 12px;
+            background: var(--bg-primary);
+            border: 1px solid var(--glass-border);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .field-option:hover {
+            background: var(--primary);
+            color: white;
+        }
+        .field-option input { 
+            margin: 0; 
+            cursor: pointer;
+        }
+        .field-option label {
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        /* Status Messages */
+        .status-message { 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            font-size: 13px; 
+            margin-top: 8px;
+        }
+        .status-success { 
+            background: rgba(16, 185, 129, 0.1); 
+            color: var(--success); 
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .status-error { 
+            background: rgba(239, 68, 68, 0.1); 
+            color: var(--danger); 
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+        
+        /* Save/Reset Section */
+        .save-section { 
+            background: var(--bg-tertiary); 
+            border-radius: 12px; 
+            padding: 16px; 
+            text-align: center;
+        }
+        .save-buttons { 
+            display: flex; 
+            gap: 12px; 
+            justify-content: center; 
+            margin-top: 12px;
+        }
+        
+        /* Test Form Button Styling */
+        .test-form-btn {
+            width: 100%;
+            margin-top: var(--space-sm);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: none;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .test-form-btn:hover {
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .test-form-btn:active {
+            transform: translateY(0);
+        }
+
+        .test-instructions {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 16px;
+        }
+
+        .test-instructions h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .test-instructions ol li {
+            margin-bottom: 4px;
+        }
+
+        /* Animation for button click */
+        .test-form-btn.clicked {
+            animation: buttonSuccess 0.6s ease-out;
+        }
+
+        @keyframes buttonSuccess {
+            0% {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                transform: scale(1);
+            }
+            50% {
+                background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+                transform: scale(1.05);
+            }
+            100% {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                transform: scale(1);
+            }
+        }
+
+        /* Notification Styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+            z-index: 10000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease-out;
+            max-width: 300px;
+            word-wrap: break-word;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .notification-error {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 20px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <!-- Header with Back Button -->
+        <div class="settings-header">
+            <button class="back-btn" id="backBtn">← Back</button>
+            <div class="settings-title">Settings</div>
+        </div>
+        
+        <!-- Settings Content -->
+        <div class="settings-content">
+            <!-- 🔑 API Key Setup -->
+            <div class="setting-card">
+                <div class="setting-header">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <circle cx="12" cy="16" r="1"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <h3>🔑 API Key Setup</h3>
+                </div>
+                <div class="api-input-group">
+                    <input type="password" id="apiKeyInput" class="api-input" placeholder="Enter your Gemini API Key">
+                    <button id="toggleVisibility" class="btn btn-small" title="Show/Hide">👁️</button>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button id="saveApiKeyBtn" class="btn btn-primary">Save Key</button>
+                    <button id="removeApiKeyBtn" class="btn btn-danger">Remove</button>
+                </div>
+                <div id="apiStatus" class="status-message" style="display: none;"></div>
+            </div>
+            
+            <!-- 🔄 System Reset & Troubleshooting -->
+            <div class="setting-card">
+                <div class="setting-header">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <polyline points="1 20 1 14 7 14"/>
+                        <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                    </svg>
+                    <h3>🔄 System Reset & Troubleshooting</h3>
+                </div>
+                <p style="margin: 0 0 16px 0; color: var(--text-secondary); font-size: 14px;">
+                    Reset extraction state if the extension gets stuck during processing. This won't affect your settings or history.
+                </p>
+                <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 12px;">
+                    <button id="resetExtractionBtn" class="btn btn-danger">🔄 Reset Extraction State</button>
+                    <div id="extractionStatus" style="color: var(--text-secondary); font-size: 13px;">
+                        Status: <span id="currentExtractionStatus">Ready</span>
+                    </div>
+                </div>
+                <div class="test-instructions" style="background: rgba(239, 68, 68, 0.05); border-color: rgba(239, 68, 68, 0.2);">
+                    <h4 style="margin: 0 0 8px 0; font-size: 13px; color: var(--danger);">⚠️ When to use this reset:</h4>
+                    <ul style="margin: 0; padding-left: 16px; color: var(--text-secondary); font-size: 12px; line-height: 1.5;">
+                        <li>Extension stuck on "Extracting..." indefinitely</li>
+                        <li>Extract button unresponsive or grayed out</li>
+                        <li>Cannot upload new images for processing</li>
+                        <li>Any extraction-related freezing or errors</li>
+                    </ul>
+                </div>
+                <div id="resetStatus" class="status-message" style="display: none;"></div>
+            </div>
+            
+            <!-- 🎨 Theme Selection -->
+            <div class="setting-card">
+                <div class="setting-header">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <h3>🎨 Theme Selection</h3>
+                </div>
+                <div class="theme-options">
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="light" checked>
+                        <span>☀️ Light</span>
+                    </label>
+                    <label class="theme-option">
+                        <input type="radio" name="theme" value="dark">
+                        <span>🌙 Dark</span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- ☑️ Field Selection -->
+            <div class="setting-card">
+                <div class="setting-header">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <polyline points="9,11 12,14 22,4"/>
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                    <h3>☑️ Field Selection</h3>
+                </div>
+                <div class="fields-grid" id="fieldsGrid">
+                    <!-- Fields will be populated by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- 🧪 Extension Testing -->
+            <div class="setting-card">
+                <div class="setting-header">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <line x1="10" y1="9" x2="8" y2="9"/>
+                    </svg>
+                    <h3>🧪 Extension Testing</h3>
+                </div>
+                <p style="margin: 0 0 16px 0; color: var(--text-secondary); font-size: 14px;">
+                    Test your extension's autofill functionality with a sample form
+                </p>
+                
+                <button id="openTestFormBtn" class="btn btn-primary test-form-btn">
+                    <svg style="width: 16px; height: 16px; margin-right: 8px;" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14,2 14,8 20,8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                        <line x1="10" y1="9" x2="8" y2="9"/>
+                    </svg>
+                    Open Test Form
+                </button>
+                
+                <div class="test-instructions">
+                    <h4 style="margin: 16px 0 8px 0; font-size: 14px; font-weight: 600; color: var(--text-primary);">📋 How to test:</h4>
+                    <ol style="margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+                        <li>Click "Open Test Form" to open the test page</li>
+                        <li>Upload an ID/Passport image in this extension</li>
+                        <li>Click "Extract Data" to process the image</li>
+                        <li>Click "Autofill" to automatically fill the test form</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <!-- 💾 Save/Reset Options -->
+            <div class="setting-card">
+                <div class="setting-header">
+                    <svg class="setting-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                        <polyline points="17,21 17,13 7,13 7,21"/>
+                        <polyline points="7,3 7,8 15,8"/>
+                    </svg>
+                    <h3>💾 Save/Reset Options</h3>
+                </div>
+                <div class="save-section">
+                    <p style="margin: 0 0 12px 0; color: var(--text-secondary); font-size: 14px;">
+                        All settings are automatically saved. Reset will only restore field selection.
+                    </p>
+                    <div class="save-buttons">
+                        <button id="resetAllBtn" class="btn btn-danger">Reset Field Selection</button>
+                        <button id="exportBtn" class="btn btn-primary">Export Settings</button>
+                    </div>
+                    <!-- Dedicated status area for save/export operations -->
+                    <div id="saveStatus" class="status-message" style="display: none; margin-top: 12px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="settings.js"></script>
+</body>
+</html>

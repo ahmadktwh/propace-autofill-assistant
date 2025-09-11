@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Field Detection Test - Propace Autofill</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .section-title {
+            background: #007bff;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: bold;
+            position: absolute;
+            top: -12px;
+            left: 20px;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 15px 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            background-color: #f8f9ff;
+        }
+        .filled {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+        }
+        .test-button {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,123,255,0.3);
+        }
+        .test-button.secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 500;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 5px solid #17a2b8;
+        }
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 5px solid #ffc107;
+        }
+        .calendar-field {
+            position: relative;
+        }
+        .calendar-icon {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c757d;
+            pointer-events: none;
+        }
+        .results {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Enhanced Field Detection Test</h1>
+            <p>Testing ID Number Formatting, Date Handling & Advanced Field Detection</p>
+        </div>
+
+        <div class="status info">
+            <strong>🎯 Test Features:</strong>
+            <ul style="margin: 10px 0; padding-left: 20px;">
+                <li>Pakistani CNIC formatting (36502-2333333-1)</li>
+                <li>Phone number formatting (+92-300-1234567)</li>
+                <li>Date picker interaction</li>
+                <li>Advanced field pattern matching</li>
+                <li>Multiple naming conventions support</li>
+            </ul>
+        </div>
+
+        <!-- ID Number Testing Section -->
+        <div class="test-section">
+            <div class="section-title">🆔 ID Number Formats</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="cnic">CNIC Number:</label>
+                    <input type="text" id="cnic" name="cnic" placeholder="36502-2333333-1">
+                </div>
+                <div class="form-group">
+                    <label for="nationalId">National ID:</label>
+                    <input type="text" id="nationalId" name="nationalId" placeholder="Enter ID number">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="identity_card">Identity Card:</label>
+                    <input type="text" id="identity_card" name="identity_card" placeholder="ID without dashes">
+                </div>
+                <div class="form-group">
+                    <label for="govt-id">Government ID:</label>
+                    <input type="text" id="govt-id" name="govt-id" placeholder="Any ID format">
+                </div>
+            </div>
+        </div>
+
+        <!-- Phone Number Testing Section -->
+        <div class="test-section">
+            <div class="section-title">📱 Phone Number Formats</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="mobile">Mobile Number:</label>
+                    <input type="tel" id="mobile" name="mobile" placeholder="+92-300-1234567">
+                </div>
+                <div class="form-group">
+                    <label for="phone_number">Phone Number:</label>
+                    <input type="tel" id="phone_number" name="phone_number" placeholder="0300-1234567">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="contact">Contact Number:</label>
+                    <input type="tel" id="contact" name="contact" placeholder="Without formatting">
+                </div>
+                <div class="form-group">
+                    <label for="telephone">Telephone:</label>
+                    <input type="tel" id="telephone" name="telephone" placeholder="Any phone format">
+                </div>
+            </div>
+        </div>
+
+        <!-- Date Testing Section -->
+        <div class="test-section">
+            <div class="section-title">📅 Date Formats & Pickers</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dateOfBirth">Date of Birth:</label>
+                    <div class="calendar-field">
+                        <input type="date" id="dateOfBirth" name="dateOfBirth">
+                        <span class="calendar-icon">📅</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birth_date">Birth Date (Text):</label>
+                    <input type="text" id="birth_date" name="birth_date" placeholder="DD/MM/YYYY">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="dob">DOB:</label>
+                    <input type="text" id="dob" name="dob" placeholder="MM/DD/YYYY">
+                </div>
+                <div class="form-group">
+                    <label for="birthday">Birthday:</label>
+                    <input type="text" id="birthday" name="birthday" placeholder="Any date format">
+                </div>
+            </div>
+        </div>
+
+        <!-- Name Testing Section -->
+        <div class="test-section">
+            <div class="section-title">👤 Name Field Variations</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Given name">
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Family name">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="full_name">Full Name:</label>
+                    <input type="text" id="full_name" name="full_name" placeholder="Complete name">
+                </div>
+                <div class="form-group">
+                    <label for="applicant_name">Applicant Name:</label>
+                    <input type="text" id="applicant_name" name="applicant_name" placeholder="Person's name">
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Testing Section -->
+        <div class="test-section">
+            <div class="section-title">📧 Contact Information</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="email_address">Email Address:</label>
+                    <input type="email" id="email_address" name="email_address" placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="contact_email">Contact Email:</label>
+                    <input type="email" id="contact_email" name="contact_email" placeholder="contact@domain.com">
+                </div>
+            </div>
+        </div>
+
+        <!-- Address Testing Section -->
+        <div class="test-section">
+            <div class="section-title">🏠 Address Fields</div>
+            <div class="form-group">
+                <label for="home_address">Home Address:</label>
+                <textarea id="home_address" name="home_address" rows="3" placeholder="Complete address"></textarea>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="city_name">City:</label>
+                    <input type="text" id="city_name" name="city_name" placeholder="City name">
+                </div>
+                <div class="form-group">
+                    <label for="area">Area/Locality:</label>
+                    <input type="text" id="area" name="area" placeholder="Area or locality">
+                </div>
+            </div>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="test-section">
+            <div class="section-title">🧪 Test Controls</div>
+            <button class="test-button" onclick="testExtensionFormatting()">🚀 Test Enhanced Autofill</button>
+            <button class="test-button secondary" onclick="clearAllFields()">🗑️ Clear All Fields</button>
+            <button class="test-button secondary" onclick="validateFormats()">✅ Validate Formats</button>
+            <button class="test-button secondary" onclick="showFormattingExamples()">📋 Show Examples</button>
+        </div>
+
+        <!-- Results Area -->
+        <div id="results" class="results" style="display: none;">
+            Test results will appear here...
+        </div>
+
+        <!-- Test Status -->
+        <div id="test-status"></div>
+    </div>
+
+    <script>
+        // Test data with various formats
+        const testData = {
+            // ID numbers in different formats
+            cnic: '3650223333331',
+            nationalId: '36502233333331',
+            idNumber: '36502-2333333-1',
+            
+            // Phone numbers
+            mobile: '923001234567',
+            phone: '03001234567', 
+            contact: '3001234567',
+            
+            // Names
+            firstName: 'ahmad',
+            lastName: 'ali',
+            fullName: 'ahmad ali khan',
+            name: 'AHMAD ALI KHAN',
+            
+            // Dates
+            dateOfBirth: '1990-05-15',
+            birthDate: '15/05/1990',
+            dob: '05/15/1990',
+            
+            // Contact info
+            email: 'AHMAD.ALI@EXAMPLE.COM',
+            emailAddress: 'ahmad@test.com',
+            
+            // Address
+            address: '123 Test Street, Model Town',
+            city: 'lahore',
+            area: 'model town'
+        };
+
+        function testExtensionFormatting() {
+            const results = document.getElementById('results');
+            const status = document.getElementById('test-status');
+            
+            results.style.display = 'block';
+            results.textContent = '🚀 Testing enhanced autofill with formatting...\n\n';
+            
+            // Show test data being used
+            results.textContent += '📊 Test Data:\n';
+            results.textContent += JSON.stringify(testData, null, 2) + '\n\n';
+            
+            // Simulate extension trigger
+            window.postMessage({
+                type: 'PROPACE_ENHANCED_AUTOFILL_TEST',
+                data: testData
+            }, '*');
+            
+            status.innerHTML = `
+                <div class="status info">
+                    <strong>🧪 Test Started:</strong> Check the console for detailed formatting logs and watch fields get filled with proper formatting.
+                </div>
+            `;
+            
+            // Check results after a delay
+            setTimeout(checkFormattingResults, 3000);
+        }
+
+        function checkFormattingResults() {
+            const results = document.getElementById('results');
+            const status = document.getElementById('test-status');
+            
+            results.textContent += '🔍 Checking field formatting results...\n\n';
+            
+            const fields = document.querySelectorAll('input, textarea, select');
+            let filledCount = 0;
+            let properlyFormatted = 0;
+            
+            fields.forEach(field => {
+                if (field.value.trim()) {
+                    filledCount++;
+                    field.classList.add('filled');
+                    
+                    // Check if formatting is applied
+                    const fieldName = field.name || field.id;
+                    const value = field.value;
+                    
+                    results.textContent += `📝 ${fieldName}: "${value}"\n`;
+                    
+                    // Validate formatting
+                    if (fieldName.includes('cnic') || fieldName.includes('id')) {
+                        if (value.includes('-') && value.match(/\d{5}-\d{7}-\d/)) {
+                            properlyFormatted++;
+                            results.textContent += `  ✅ ID format: CORRECT\n`;
+                        } else {
+                            results.textContent += `  ⚠️ ID format: Needs improvement\n`;
+                        }
+                    } else if (fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('contact')) {
+                        if (value.includes('-') || value.includes('+')) {
+                            properlyFormatted++;
+                            results.textContent += `  ✅ Phone format: CORRECT\n`;
+                        } else {
+                            results.textContent += `  ⚠️ Phone format: Needs improvement\n`;
+                        }
+                    } else if (fieldName.includes('date') || fieldName.includes('birth') || fieldName.includes('dob')) {
+                        if (value.includes('/') || value.includes('-')) {
+                            properlyFormatted++;
+                            results.textContent += `  ✅ Date format: CORRECT\n`;
+                        } else {
+                            results.textContent += `  ⚠️ Date format: Needs improvement\n`;
+                        }
+                    } else if (fieldName.includes('name')) {
+                        if (value.charAt(0) === value.charAt(0).toUpperCase()) {
+                            properlyFormatted++;
+                            results.textContent += `  ✅ Name format: CORRECT\n`;
+                        } else {
+                            results.textContent += `  ⚠️ Name format: Needs improvement\n`;
+                        }
+                    } else {
+                        properlyFormatted++;
+                    }
+                    
+                    results.textContent += '\n';
+                }
+            });
+            
+            const successRate = Math.round((filledCount / fields.length) * 100);
+            const formatRate = Math.round((properlyFormatted / filledCount) * 100) || 0;
+            
+            results.textContent += `\n📊 RESULTS SUMMARY:\n`;
+            results.textContent += `   Fields Filled: ${filledCount}/${fields.length} (${successRate}%)\n`;
+            results.textContent += `   Properly Formatted: ${properlyFormatted}/${filledCount} (${formatRate}%)\n\n`;
+            
+            if (formatRate >= 80) {
+                status.innerHTML = `
+                    <div class="status success">
+                        <strong>🎉 Excellent!</strong> ${formatRate}% of fields are properly formatted. Enhanced formatting is working great!
+                    </div>
+                `;
+            } else if (formatRate >= 60) {
+                status.innerHTML = `
+                    <div class="status warning">
+                        <strong>⚠️ Good Progress:</strong> ${formatRate}% of fields are formatted. Some improvements needed.
+                    </div>
+                `;
+            } else {
+                status.innerHTML = `
+                    <div class="status warning">
+                        <strong>🔧 Needs Work:</strong> Only ${formatRate}% properly formatted. Check console for debugging info.
+                    </div>
+                `;
+            }
+        }
+
+        function clearAllFields() {
+            const fields = document.querySelectorAll('input, textarea, select');
+            fields.forEach(field => {
+                field.value = '';
+                field.classList.remove('filled');
+            });
+            
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('test-status').innerHTML = `
+                <div class="status info">
+                    <strong>🗑️ Cleared:</strong> All fields have been cleared.
+                </div>
+            `;
+        }
+
+        function validateFormats() {
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            results.textContent = '🔍 Validating current field formats...\n\n';
+            
+            const fields = document.querySelectorAll('input, textarea');
+            let validCount = 0;
+            
+            fields.forEach(field => {
+                if (field.value.trim()) {
+                    const fieldName = field.name || field.id;
+                    const value = field.value;
+                    const validation = validateField(fieldName, value);
+                    
+                    results.textContent += `📝 ${fieldName}: "${value}"\n`;
+                    results.textContent += `   ${validation.valid ? '✅' : '❌'} ${validation.message}\n\n`;
+                    
+                    if (validation.valid) validCount++;
+                }
+            });
+            
+            results.textContent += `\n📊 Validation Summary: ${validCount} fields have valid formats\n`;
+        }
+
+        function validateField(fieldName, value) {
+            if (fieldName.includes('cnic') || fieldName.includes('id')) {
+                const cleanId = value.replace(/\D/g, '');
+                if (cleanId.length >= 11 && cleanId.length <= 15) {
+                    if (value.includes('-')) {
+                        return { valid: true, message: 'Valid Pakistani ID format' };
+                    } else {
+                        return { valid: false, message: 'Should include dashes (36502-2333333-1)' };
+                    }
+                } else {
+                    return { valid: false, message: 'ID should be 11-15 digits' };
+                }
+            } else if (fieldName.includes('phone') || fieldName.includes('mobile') || fieldName.includes('contact')) {
+                const cleanPhone = value.replace(/\D/g, '');
+                if (cleanPhone.length >= 10 && cleanPhone.length <= 13) {
+                    if (value.includes('-') || value.includes('+')) {
+                        return { valid: true, message: 'Valid phone format' };
+                    } else {
+                        return { valid: false, message: 'Should include formatting (+92-300-1234567)' };
+                    }
+                } else {
+                    return { valid: false, message: 'Phone number length invalid' };
+                }
+            } else if (fieldName.includes('date') || fieldName.includes('birth') || fieldName.includes('dob')) {
+                const date = new Date(value);
+                if (!isNaN(date.getTime())) {
+                    return { valid: true, message: 'Valid date format' };
+                } else {
+                    return { valid: false, message: 'Invalid date format' };
+                }
+            } else if (fieldName.includes('email')) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (emailRegex.test(value)) {
+                    return { valid: true, message: 'Valid email format' };
+                } else {
+                    return { valid: false, message: 'Invalid email format' };
+                }
+            }
+            
+            return { valid: true, message: 'Format OK' };
+        }
+
+        function showFormattingExamples() {
+            const results = document.getElementById('results');
+            results.style.display = 'block';
+            results.textContent = `📋 FORMATTING EXAMPLES:
+
+🆔 ID Number Formats:
+   Input: 3650223333331
+   Output: 36502-2333333-1
+
+📱 Phone Number Formats:
+   Input: 923001234567
+   Output: +92-300-1234567
+   
+   Input: 03001234567
+   Output: 0300-1234567
+
+📅 Date Formats:
+   Input: 1990-05-15
+   Output: 15/05/1990 (Pakistani format)
+   
+   Input: 05/15/1990
+   Output: 15/05/1990 (converted)
+
+👤 Name Formats:
+   Input: ahmad ali khan
+   Output: Ahmad Ali Khan
+   
+   Input: JOHN DOE
+   Output: John Doe
+
+📧 Email Formats:
+   Input: USER@EXAMPLE.COM
+   Output: user@example.com
+
+🏠 Address Detection Patterns:
+   • address, home_address, postal_address
+   • street, location, residence
+   • city, town, municipality
+   • area, locality, district
+`;
+        }
+
+        // Listen for extension messages
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'PROPACE_ENHANCED_AUTOFILL_TEST') {
+                console.log('📨 Enhanced test message received');
+                console.log('🎯 Testing advanced field detection and formatting');
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌟 Enhanced Field Detection Test Page Loaded');
+            console.log('🎯 Ready to test ID formatting, date handling, and advanced field detection');
+            
+            document.getElementById('test-status').innerHTML = `
+                <div class="status info">
+                    <strong>📋 Ready for Testing:</strong> Click "Test Enhanced Autofill" to verify ID formatting, date handling, and field detection improvements.
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>
